@@ -13,9 +13,9 @@
 |---|---|---|---|---|
 | **Supabase PostgreSQL Schema** | 🟢 Complete (12 Migrations) | Verified | Strict Tenant RLS Enforced | Passed (`tenant_isolation_test.sql`) |
 | **Shared Packages** | 🟢 Complete (`types`, `config`, `contracts`) | Compiled (dist) | Strong Typing & Zod | Verified |
-| **Super Admin Portal** | 🟢 Complete (`apps/admin`) | Production Ready | Platform Admin Gated | Verified |
-| **Web App (Marketing & Portals)** | 🟢 Complete (`apps/web`) | Production Ready | Tenant RLS & Middleware | Verified |
-| **Flutter Mobile App** | 🟢 Complete (`apps/mobile`) | Production Ready | Riverpod, Supabase SDK | Passed (`flutter test`, 3/3 passed) |
+| **Super Admin Portal** | 🟢 Complete (`apps/admin`) | Verified (`next build`) | Platform Admin Gated | Verified |
+| **Web App (Marketing & Portals)** | 🟢 Complete (`apps/web`) | Verified (`next build`) | Tenant RLS & Middleware | Verified |
+| **Flutter Mobile App** | 🟢 Complete (`apps/mobile`) | Verified (`app-debug.apk` 155 MB) | Riverpod, Supabase SDK | Passed (`flutter test`, 3/3 passed) |
 | **Server-Driven UI Engine** | 🟢 Complete (Mobile & Web) | Live Interactive | Safe Component Registry | Verified |
 | **Edge Functions** | 🟢 Complete (`pay-verify`, `sdui`, `fcm`) | Deployed/Tested | Secret Key Verification | Verified |
 
@@ -80,7 +80,9 @@
   - [x] Zero-warning Dart code analysis
 - [x] **Phase 14: Deployment, Android APK and AAB build documentation**
   - [x] Full build instructions in `docs/deployment/`
-  - [x] Android APK build configuration with redirected `GRADLE_USER_HOME`
+  - [x] Android APK build verified (`apps/mobile/build/app/outputs/flutter-apk/app-debug.apk`, 154.97 MB)
+  - [x] Next.js Web App build verified (`apps/web`, 5/5 static & dynamic routes compiled)
+  - [x] Super Admin Next.js build verified (`apps/admin`, 11/11 static pages compiled)
 
 ---
 
