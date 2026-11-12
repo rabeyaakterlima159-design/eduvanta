@@ -1,0 +1,29 @@
+{
+  "name": "eduvanta-ecosystem",
+  "version": "1.0.0",
+  "description": "EDUVANTA - Smart Campus Management Ecosystem (One Platform. Every Campus. Smarter Education.)",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "web:dev": "npm run dev --workspace=apps/web",
+    "admin:dev": "npm run dev --workspace=apps/admin"
+  },
+  "keywords": [
+    "education",
+    "campus-management",
+    "multi-tenant",
+    "supabase",
+    "flutter",
+    "nextjs",
+    "sdui",
+    "edtech"
+  ],
+  "author": "EDUVANTA Architecture Team",
+  "license": "Proprietary"
+}

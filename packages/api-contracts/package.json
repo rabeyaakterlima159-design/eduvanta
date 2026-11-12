@@ -1,0 +1,18 @@
+{
+  "name": "@eduvanta/api-contracts",
+  "version": "1.0.0",
+  "description": "Validation schemas (Zod) and API request/response contracts for EDUVANTA",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "@eduvanta/shared-types": "file:../shared-types",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  }
+}

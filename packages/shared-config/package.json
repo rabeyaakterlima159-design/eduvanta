@@ -1,0 +1,14 @@
+{
+  "name": "@eduvanta/shared-config",
+  "version": "1.0.0",
+  "description": "Shared constants, brand color palette, and configuration presets for EDUVANTA",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  }
+}
