@@ -127,11 +127,11 @@ class _SchoolAdminDashboardScreenState extends ConsumerState<SchoolAdminDashboar
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
+              const Row(
                 children: [
-                  const Icon(Icons.how_to_reg, size: 20, color: EduvantaColors.primaryNavy),
-                  const SizedBox(width: 8),
-                  const Text(
+                  Icon(Icons.how_to_reg, size: 20, color: EduvantaColors.primaryNavy),
+                  SizedBox(width: 8),
+                  Text(
                     'Student Registration Approvals',
                     style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: EduvantaColors.primaryNavy),
                   ),

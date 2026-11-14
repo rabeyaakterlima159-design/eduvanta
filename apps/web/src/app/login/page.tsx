@@ -22,18 +22,35 @@ export default function LoginPage() {
   const [role, setRole] = useState<'student' | 'teacher' | 'parent' | 'school_admin' | 'super_admin'>('student');
   const [loading, setLoading] = useState(false);
 
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMsg(null);
     setLoading(true);
 
     setTimeout(() => {
       setLoading(false);
-      if (role === 'super_admin') {
+      const normalizedEmail = email.trim().toLowerCase();
+
+      // Check Super Admin
+      if (normalizedEmail === 'sohel229229@gmail.com') {
+        if (password !== 'shariar123') {
+          setErrorMsg('Invalid password for Super Admin account.');
+          return;
+        }
         window.location.href = 'http://localhost:3001';
-      } else {
-        window.location.href = `/portal/${selectedSchool}?role=${role}`;
+        return;
       }
-    }, 600);
+
+      if (password.length < 4) {
+        setErrorMsg('Please enter a valid password.');
+        return;
+      }
+
+      // Normal campus role routing
+      window.location.href = `/portal/${selectedSchool}?role=${role}&email=${encodeURIComponent(normalizedEmail)}`;
+    }, 500);
   };
 
   return (
@@ -51,6 +68,11 @@ export default function LoginPage() {
           </div>
 
           {/* Role selector */}
+          {errorMsg && (
+            <div className="p-3 bg-red-50 border border-red-200 text-red-700 text-xs rounded-xl font-semibold">
+              {errorMsg}
+            </div>
+          )}
           <div className="space-y-1.5">
             <label className="block text-xs font-bold text-slate-700">Account Type</label>
             <div className="grid grid-cols-2 gap-2 text-xs font-semibold">

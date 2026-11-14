@@ -31,7 +31,7 @@ class CurrentUserContext {
   final String userId;
   final String schoolId;
   final String schoolName;
-  final String role; // 'student', 'teacher', 'parent', 'school_admin', 'staff'
+  final String role; // 'student', 'teacher', 'parent', 'school_admin', 'super_admin'
   final String fullName;
   final String email;
   final String status; // 'active', 'pending', 'suspended'
@@ -77,6 +77,34 @@ class CurrentUserContext {
       rollNumber: rollNumber ?? this.rollNumber,
     );
   }
+}
+
+class SystemAccount {
+  final String id;
+  final String email;
+  final String password;
+  final String fullName;
+  final String role;
+  final String schoolId;
+  final String schoolName;
+  final String status;
+  final String? studentClass;
+  final String? studentSection;
+  final String? rollNumber;
+
+  SystemAccount({
+    required this.id,
+    required this.email,
+    required this.password,
+    required this.fullName,
+    required this.role,
+    required this.schoolId,
+    required this.schoolName,
+    this.status = 'active',
+    this.studentClass,
+    this.studentSection,
+    this.rollNumber,
+  });
 }
 
 class RegistrationApplication {
@@ -152,50 +180,81 @@ class RegistrationApplication {
 }
 
 // ==============================================================================
-// Predefined Demo Accounts
+// Persistent System Accounts (Real Credentials)
 // ==============================================================================
 
-final Map<String, CurrentUserContext> kDemoAccounts = {
-  'student': CurrentUserContext(
-    userId: 'student-tanvir-01',
-    schoolId: '22222222-2222-2222-2222-222222222201',
-    schoolName: 'Dhaka Premier International School',
-    role: 'student',
-    fullName: 'Tanvir Ahmed',
-    email: 'student@dpis.edu.bd',
-    status: 'active',
-    studentClass: 'Class 10',
-    studentSection: 'Section A',
-    rollNumber: '1001',
-  ),
-  'teacher': CurrentUserContext(
-    userId: 'teacher-rahim-01',
-    schoolId: '22222222-2222-2222-2222-222222222201',
-    schoolName: 'Dhaka Premier International School',
-    role: 'teacher',
-    fullName: 'Prof. Abdur Rahim',
-    email: 'teacher@dpis.edu.bd',
-    status: 'active',
-  ),
-  'parent': CurrentUserContext(
-    userId: 'parent-kamal-01',
-    schoolId: '22222222-2222-2222-2222-222222222201',
-    schoolName: 'Dhaka Premier International School',
-    role: 'parent',
-    fullName: 'Mohammad Kamal',
-    email: 'parent@dpis.edu.bd',
-    status: 'active',
-  ),
-  'school_admin': CurrentUserContext(
-    userId: 'admin-tariq-01',
-    schoolId: '22222222-2222-2222-2222-222222222201',
-    schoolName: 'Dhaka Premier International School',
-    role: 'school_admin',
-    fullName: 'Dr. Tariqul Islam',
-    email: 'admin@dpis.edu.bd',
-    status: 'active',
-  ),
-};
+class SystemAccountsNotifier extends StateNotifier<List<SystemAccount>> {
+  SystemAccountsNotifier()
+      : super([
+          // Official Super Admin
+          SystemAccount(
+            id: 'usr-super-admin',
+            email: 'sohel229229@gmail.com',
+            password: 'shariar123',
+            fullName: 'Sohel Shariar',
+            role: 'school_admin',
+            schoolId: '22222222-2222-2222-2222-222222222201',
+            schoolName: 'Dhaka Premier International School (Executive Hub)',
+            status: 'active',
+          ),
+          // Student Account
+          SystemAccount(
+            id: 'usr-student-tanvir',
+            email: 'student@dpis.edu.bd',
+            password: 'password123',
+            fullName: 'Tanvir Ahmed',
+            role: 'student',
+            schoolId: '22222222-2222-2222-2222-222222222201',
+            schoolName: 'Dhaka Premier International School',
+            status: 'active',
+            studentClass: 'Class 10',
+            studentSection: 'Section A',
+            rollNumber: '1001',
+          ),
+          // Teacher Account
+          SystemAccount(
+            id: 'usr-teacher-rahim',
+            email: 'teacher@dpis.edu.bd',
+            password: 'password123',
+            fullName: 'Prof. Abdur Rahim',
+            role: 'teacher',
+            schoolId: '22222222-2222-2222-2222-222222222201',
+            schoolName: 'Dhaka Premier International School',
+            status: 'active',
+          ),
+          // Parent Account
+          SystemAccount(
+            id: 'usr-parent-kamal',
+            email: 'parent@dpis.edu.bd',
+            password: 'password123',
+            fullName: 'Mohammad Kamal',
+            role: 'parent',
+            schoolId: '22222222-2222-2222-2222-222222222201',
+            schoolName: 'Dhaka Premier International School',
+            status: 'active',
+          ),
+          // School Admin Account
+          SystemAccount(
+            id: 'usr-admin-tariq',
+            email: 'admin@dpis.edu.bd',
+            password: 'password123',
+            fullName: 'Dr. Tariqul Islam',
+            role: 'school_admin',
+            schoolId: '22222222-2222-2222-2222-222222222201',
+            schoolName: 'Dhaka Premier International School',
+            status: 'active',
+          ),
+        ]);
+
+  void addAccount(SystemAccount account) {
+    state = [account, ...state];
+  }
+}
+
+final systemAccountsProvider =
+    StateNotifierProvider<SystemAccountsNotifier, List<SystemAccount>>((ref) {
+  return SystemAccountsNotifier();
+});
 
 // ==============================================================================
 // Registrations State Notifier (Approvals & Management)
@@ -277,7 +336,7 @@ class RegistrationNotifier extends StateNotifier<List<RegistrationApplication>> 
     state = [
       for (final app in state)
         if (app.id == id)
-          app.copyWith(status: 'approved', reviewNotes: 'Approved by School Administration')
+          app.copyWith(status: 'approved', reviewNotes: 'Approved by Administration')
         else
           app,
     ];
@@ -336,13 +395,6 @@ class AuthController extends StateNotifier<AuthState> {
 
   AuthController(this.ref) : super(const AuthState());
 
-  void loginDemo(String role) {
-    final account = kDemoAccounts[role];
-    if (account != null) {
-      state = AuthState(isLoggedIn: true, user: account);
-    }
-  }
-
   Future<bool> loginWithCredentials({
     required String email,
     required String password,
@@ -352,46 +404,107 @@ class AuthController extends StateNotifier<AuthState> {
   }) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
 
-    // Short simulated network delay
-    await Future.delayed(const Duration(milliseconds: 300));
-
     final normalizedEmail = email.trim().toLowerCase();
 
-    // Check if matching any registered application
+    // 1. Check Super Admin Credentials (Sohel229229@gmail.com / shariar123)
+    if (normalizedEmail == 'sohel229229@gmail.com') {
+      if (password != 'shariar123') {
+        state = state.copyWith(
+          isLoading: false,
+          errorMessage: 'Invalid password for Super Admin account.',
+        );
+        return false;
+      }
+
+      final superAdmin = CurrentUserContext(
+        userId: 'usr-super-admin-01',
+        schoolId: '22222222-2222-2222-2222-222222222201',
+        schoolName: 'Platform Global Executive Hub',
+        role: 'school_admin',
+        fullName: 'Sohel Shariar',
+        email: 'Sohel229229@gmail.com',
+        status: 'active',
+      );
+
+      state = AuthState(isLoggedIn: true, user: superAdmin);
+      return true;
+    }
+
+    // 2. Check System Accounts Directory
+    final accounts = ref.read(systemAccountsProvider);
+    final account = accounts.cast<SystemAccount?>().firstWhere(
+          (a) => a?.email.toLowerCase() == normalizedEmail,
+          orElse: () => null,
+        );
+
+    if (account != null) {
+      if (account.password != password) {
+        state = state.copyWith(
+          isLoading: false,
+          errorMessage: 'Incorrect password. Please verify and try again.',
+        );
+        return false;
+      }
+
+      final user = CurrentUserContext(
+        userId: account.id,
+        schoolId: account.schoolId,
+        schoolName: account.schoolName,
+        role: account.role,
+        fullName: account.fullName,
+        email: account.email,
+        status: account.status,
+        studentClass: account.studentClass,
+        studentSection: account.studentSection,
+        rollNumber: account.rollNumber,
+      );
+
+      state = AuthState(isLoggedIn: true, user: user);
+      return true;
+    }
+
+    // 3. Check Self-Registered Student Applications
     final applications = ref.read(registrationApplicationsProvider);
-    final matchedApplication = applications.cast<RegistrationApplication?>().firstWhere(
+    final matchedApp = applications.cast<RegistrationApplication?>().firstWhere(
           (a) => a?.email == normalizedEmail,
           orElse: () => null,
         );
 
-    if (matchedApplication != null) {
-      if (matchedApplication.status == 'pending') {
+    if (matchedApp != null) {
+      if (matchedApp.status == 'pending') {
         state = state.copyWith(
           isLoading: false,
           errorMessage:
-              'Account Pending Approval! Your registration application has been received by ${matchedApplication.schoolName}. Please wait for school administration approval.',
+              'Account Pending Approval! Your registration application has been received by ${matchedApp.schoolName}. Please wait for school administration approval.',
         );
         return false;
-      } else if (matchedApplication.status == 'rejected') {
+      } else if (matchedApp.status == 'rejected') {
         state = state.copyWith(
           isLoading: false,
           errorMessage:
-              'Registration Rejected: ${matchedApplication.reviewNotes ?? "Your admission request was declined. Contact campus office."}',
+              'Registration Declined: ${matchedApp.reviewNotes ?? "Your admission request was declined. Contact campus office."}',
         );
         return false;
-      } else if (matchedApplication.status == 'approved') {
-        // Log in as approved student
+      } else if (matchedApp.status == 'approved') {
+        if (matchedApp.password != password) {
+          state = state.copyWith(
+            isLoading: false,
+            errorMessage: 'Incorrect password for approved student account.',
+          );
+          return false;
+        }
+
         final newUser = CurrentUserContext(
-          userId: 'usr-${matchedApplication.id}',
-          schoolId: matchedApplication.schoolId,
-          schoolName: matchedApplication.schoolName,
+          userId: 'usr-${matchedApp.id}',
+          schoolId: matchedApp.schoolId,
+          schoolName: matchedApp.schoolName,
           role: 'student',
-          fullName: matchedApplication.fullName,
-          email: matchedApplication.email,
+          fullName: matchedApp.fullName,
+          email: matchedApp.email,
           status: 'active',
-          studentClass: matchedApplication.className,
-          studentSection: matchedApplication.section,
-          rollNumber: matchedApplication.desiredRoll,
+          studentClass: matchedApp.className,
+          studentSection: matchedApp.section,
+          rollNumber: matchedApp.desiredRoll,
         );
 
         state = AuthState(isLoggedIn: true, user: newUser);
@@ -399,31 +512,12 @@ class AuthController extends StateNotifier<AuthState> {
       }
     }
 
-    // Check predefined accounts
-    for (final demo in kDemoAccounts.values) {
-      if (demo.email.toLowerCase() == normalizedEmail ||
-          (role == demo.role && normalizedEmail.contains(role))) {
-        state = AuthState(isLoggedIn: true, user: demo);
-        return true;
-      }
-    }
-
-    // Allow flexible login with valid credentials
-    final user = CurrentUserContext(
-      userId: 'usr-${DateTime.now().millisecondsSinceEpoch}',
-      schoolId: schoolId ?? '22222222-2222-2222-2222-222222222201',
-      schoolName: schoolName ?? 'Dhaka Premier International School',
-      role: role,
-      fullName: normalizedEmail.split('@').first.replaceAll('.', ' ').toUpperCase(),
-      email: normalizedEmail,
-      status: 'active',
-      studentClass: role == 'student' ? 'Class 10' : null,
-      studentSection: role == 'student' ? 'Section A' : null,
-      rollNumber: role == 'student' ? '1099' : null,
+    // 4. If credentials don't match any registered account
+    state = state.copyWith(
+      isLoading: false,
+      errorMessage: 'Account not found for this email. Please check your credentials or register.',
     );
-
-    state = AuthState(isLoggedIn: true, user: user);
-    return true;
+    return false;
   }
 
   void logout() {
@@ -435,8 +529,17 @@ final authStateProvider = StateNotifierProvider<AuthController, AuthState>((ref)
   return AuthController(ref);
 });
 
-// Backward-compatible userContextProvider for widgets that read userContextProvider
+// Backward-compatible userContextProvider
 final userContextProvider = Provider<CurrentUserContext>((ref) {
   final authState = ref.watch(authStateProvider);
-  return authState.user ?? kDemoAccounts['student']!;
+  return authState.user ??
+      CurrentUserContext(
+        userId: 'guest',
+        schoolId: '22222222-2222-2222-2222-222222222201',
+        schoolName: 'Dhaka Premier International School',
+        role: 'student',
+        fullName: 'Guest User',
+        email: 'guest@dpis.edu.bd',
+        status: 'active',
+      );
 });

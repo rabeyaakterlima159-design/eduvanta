@@ -14,8 +14,8 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with SingleTickerProvid
   late TabController _tabController;
 
   // Login form controllers
-  final _loginEmailController = TextEditingController(text: 'student@dpis.edu.bd');
-  final _loginPasswordController = TextEditingController(text: 'password123');
+  final _loginEmailController = TextEditingController();
+  final _loginPasswordController = TextEditingController();
   String _selectedRole = 'student';
   String _selectedSchool = 'Dhaka Premier International School';
   bool _obscurePassword = true;
@@ -73,20 +73,6 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with SingleTickerProvid
   void _onRoleSelected(String role) {
     setState(() {
       _selectedRole = role;
-      switch (role) {
-        case 'student':
-          _loginEmailController.text = 'student@dpis.edu.bd';
-          break;
-        case 'teacher':
-          _loginEmailController.text = 'teacher@dpis.edu.bd';
-          break;
-        case 'parent':
-          _loginEmailController.text = 'parent@dpis.edu.bd';
-          break;
-        case 'school_admin':
-          _loginEmailController.text = 'admin@dpis.edu.bd';
-          break;
-      }
     });
   }
 
@@ -162,7 +148,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with SingleTickerProvid
                 child: const Row(
                   children: [
                     Icon(Icons.info_outline, size: 18, color: Color(0xFFB45309)),
-                    const SizedBox(width: 8),
+                    SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         'School Administrator review required before access is unlocked.',
@@ -602,44 +588,52 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with SingleTickerProvid
         ),
         const SizedBox(height: 20),
 
-        // 1-Tap Quick Demo Credentials Card (For testing)
+        // Enterprise Security & Institutional Access Note
         Container(
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(16),
             border: Border.all(color: const Color(0xFFE2E8F0)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.03),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
-              ),
-            ],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Row(
                 children: [
-                  Icon(Icons.flash_on, size: 16, color: EduvantaColors.goldAccent),
+                  Icon(Icons.security_rounded, size: 16, color: EduvantaColors.primaryNavy),
                   SizedBox(width: 6),
                   Text(
-                    'Quick 1-Tap Test Accounts (Instant Access)',
+                    'Institutional Role Access Only',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: EduvantaColors.primaryNavy),
                   ),
                 ],
               ),
+              const SizedBox(height: 6),
+              const Text(
+                'Please sign in with your official registered email and password. All access permissions are validated against multi-tenant campus records.',
+                style: TextStyle(fontSize: 11, color: Color(0xFF64748B), height: 1.4),
+              ),
               const SizedBox(height: 10),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  _buildQuickLoginButton('student', '🎓 Student', EduvantaColors.royalBlue),
-                  _buildQuickLoginButton('teacher', '👨‍🏫 Teacher', const Color(0xFF0D9488)),
-                  _buildQuickLoginButton('parent', '👨‍👩‍👦 Parent', const Color(0xFF7C3AED)),
-                  _buildQuickLoginButton('school_admin', '🛡️ Admin', EduvantaColors.primaryNavy),
-                ],
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                decoration: BoxDecoration(
+                  color: EduvantaColors.primaryNavy.withValues(alpha: 0.05),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: EduvantaColors.primaryNavy.withValues(alpha: 0.15)),
+                ),
+                child: const Row(
+                  children: [
+                    Icon(Icons.admin_panel_settings_outlined, size: 16, color: EduvantaColors.royalBlue),
+                    SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'Super Admin Login: Sohel229229@gmail.com\nDemo 1-tap logins disabled for enterprise security.',
+                        style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: EduvantaColors.primaryNavy, height: 1.3),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -672,32 +666,6 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with SingleTickerProvid
               ),
             ),
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildQuickLoginButton(String role, String label, Color color) {
-    return InkWell(
-      onTap: () => ref.read(authStateProvider.notifier).loginDemo(role),
-      borderRadius: BorderRadius.circular(8),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: color.withValues(alpha: 0.3)),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              label,
-              style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: color),
-            ),
-            const SizedBox(width: 4),
-            Icon(Icons.arrow_forward_rounded, size: 12, color: color),
-          ],
         ),
       ),
     );

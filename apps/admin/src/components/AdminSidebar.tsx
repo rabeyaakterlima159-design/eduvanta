@@ -85,12 +85,15 @@ export default function AdminSidebar() {
       {/* Footer Profile & Logout */}
       <div className="p-4 border-t border-slate-800/80 bg-[#080D21]">
         <div className="flex items-center gap-3 mb-3">
-          <div className="w-9 h-9 rounded-full bg-slate-700 flex items-center justify-center text-sm font-bold text-amber-400 border border-amber-500/30">
-            SA
+          <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-amber-500 to-amber-600 flex items-center justify-center text-sm font-extrabold text-white border border-amber-400 shadow-md">
+            SS
           </div>
           <div className="flex-1 min-w-0">
-            <div className="text-xs font-semibold text-slate-200 truncate">Super Admin</div>
-            <div className="text-[11px] text-slate-400 truncate">admin@eduvanta.com</div>
+            <div className="text-xs font-bold text-white truncate flex items-center gap-1">
+              Sohel Shariar
+              <span className="text-[9px] bg-blue-500/20 text-blue-400 px-1 rounded font-mono">Owner</span>
+            </div>
+            <div className="text-[11px] text-slate-400 truncate font-mono">Sohel229229@gmail.com</div>
           </div>
         </div>
         <button

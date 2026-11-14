@@ -394,11 +394,13 @@ class _PaymentBottomSheetState extends State<_PaymentBottomSheet> {
                   ? null
                   : () {
                       setState(() => _processing = true);
+                      final nav = Navigator.of(context);
+                      final messenger = ScaffoldMessenger.of(context);
                       Future.delayed(const Duration(milliseconds: 1000), () {
                         if (!mounted) return;
                         widget.onSuccess();
-                        Navigator.pop(context);
-                        ScaffoldMessenger.of(context).showSnackBar(
+                        nav.pop();
+                        messenger.showSnackBar(
                           const SnackBar(
                             backgroundColor: Color(0xFF16A34A),
                             content: Text('Payment verified via bKash! Digital receipt issued.'),
