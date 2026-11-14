@@ -85,10 +85,10 @@ class _StudentDashboardScreenState extends ConsumerState<StudentDashboardScreen>
             },
           ),
           IconButton(
-            icon: const Icon(Icons.swap_horiz),
-            tooltip: 'Switch Portal Role',
+            icon: const Icon(Icons.logout_rounded),
+            tooltip: 'Sign Out',
             onPressed: () {
-              _showRoleSwitchDialog();
+              ref.read(authStateProvider.notifier).logout();
             },
           ),
         ],
@@ -282,10 +282,24 @@ class _StudentDashboardScreenState extends ConsumerState<StudentDashboardScreen>
               Text(userContext.fullName, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
               Text(userContext.schoolName, style: const TextStyle(color: Color(0xFF64748B), fontSize: 12)),
               const Divider(height: 32),
-              _buildProfileRow('Student ID / Roll', '1001'),
-              _buildProfileRow('Class & Section', 'Class 10 - Section A'),
+              _buildProfileRow('Student ID / Roll', userContext.rollNumber ?? '1001'),
+              _buildProfileRow('Class & Section', '${userContext.studentClass ?? "Class 10"} - ${userContext.studentSection ?? "Section A"}'),
+              _buildProfileRow('Email', userContext.email),
               _buildProfileRow('Blood Group', 'O+ (Positive)'),
-              _buildProfileRow('Parent Contact', '+880 1711 000 000'),
+              const Divider(height: 24),
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: EduvantaColors.danger,
+                    side: const BorderSide(color: EduvantaColors.danger),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  ),
+                  onPressed: () => ref.read(authStateProvider.notifier).logout(),
+                  icon: const Icon(Icons.logout, size: 16),
+                  label: const Text('Sign Out of Account'),
+                ),
+              ),
             ],
           ),
         ),
@@ -302,55 +316,6 @@ class _StudentDashboardScreenState extends ConsumerState<StudentDashboardScreen>
           Text(label, style: const TextStyle(color: Color(0xFF64748B), fontSize: 12)),
           Text(value, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
         ],
-      ),
-    );
-  }
-
-  void _showRoleSwitchDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Switch Portal View', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const Icon(Icons.school, color: Colors.blue),
-              title: const Text('Student Portal', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.person_pin, color: Colors.orange),
-              title: const Text('Teacher Portal', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
-              onTap: () {
-                Navigator.pop(context);
-                ref.read(userContextProvider.notifier).state = CurrentUserContext(
-                  userId: 'teacher-nasreen-01',
-                  schoolId: '22222222-2222-2222-2222-222222222201',
-                  schoolName: 'Dhaka Premier International School',
-                  role: 'teacher',
-                  fullName: 'Prof. Nasreen Sultana',
-                );
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.family_restroom, color: Colors.green),
-              title: const Text('Parent Portal', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
-              onTap: () {
-                Navigator.pop(context);
-                ref.read(userContextProvider.notifier).state = CurrentUserContext(
-                  userId: 'parent-farhana-01',
-                  schoolId: '22222222-2222-2222-2222-222222222201',
-                  schoolName: 'Dhaka Premier International School',
-                  role: 'parent',
-                  fullName: 'Farhana Yasmin',
-                );
-              },
-            ),
-          ],
-        ),
       ),
     );
   }

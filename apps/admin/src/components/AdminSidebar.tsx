@@ -16,11 +16,13 @@ import {
   FileSpreadsheet,
   LogOut,
   Sparkles,
+  UserCheck,
 } from 'lucide-react';
 
 const navItems = [
   { label: 'Dashboard', href: '/', icon: LayoutDashboard },
   { label: 'Schools', href: '/schools', icon: Building2 },
+  { label: 'Admissions & Approvals', href: '/admissions', icon: UserCheck, badge: '2' },
   { label: 'Users', href: '/users', icon: Users },
   { label: 'Subscriptions', href: '/subscriptions', icon: CreditCard },
   { label: 'SDUI & Remote Config', href: '/sdui-builder', icon: Sliders },
@@ -60,14 +62,21 @@ export default function AdminSidebar() {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
+              className={`flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
                 isActive
                   ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
                   : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
               }`}
             >
-              <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-slate-400'}`} />
-              {item.label}
+              <div className="flex items-center gap-3">
+                <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-slate-400'}`} />
+                {item.label}
+              </div>
+              {item.badge && (
+                <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                  {item.badge}
+                </span>
+              )}
             </Link>
           );
         })}

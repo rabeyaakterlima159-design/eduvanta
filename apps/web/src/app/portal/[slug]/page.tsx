@@ -65,6 +65,51 @@ export default function TenantSchoolPortalPage({
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [feeStatus, setFeeStatus] = useState<'due' | 'paid'>('due');
 
+  // Admissions & Mobile Registrations state for School Admin
+  const [admissions, setAdmissions] = useState([
+    {
+      id: 'EDV-REG-2026-001',
+      name: 'Sumon Das',
+      email: 'sumon.das@gmail.com',
+      phone: '+880 1711-223344',
+      className: 'Class 10',
+      section: 'Section B',
+      roll: '1045',
+      guardian: 'Subir Das (+880 1819-334455)',
+      status: 'pending',
+      date: 'Today, 07:15 AM',
+    },
+    {
+      id: 'EDV-REG-2026-002',
+      name: 'Nafisa Tabassum',
+      email: 'nafisa.tabassum@gmail.com',
+      phone: '+880 1911-556677',
+      className: 'Class 9',
+      section: 'Section A',
+      roll: '9012',
+      guardian: 'Dr. Anwar Hossain (+880 1712-998877)',
+      status: 'pending',
+      date: 'Today, 04:30 AM',
+    },
+  ]);
+  const [admissionToast, setAdmissionToast] = useState<string | null>(null);
+
+  const handleApproveAdmission = (id: string, name: string) => {
+    setAdmissions((prev) =>
+      prev.map((a) => (a.id === id ? { ...a, status: 'approved' } : a))
+    );
+    setAdmissionToast(`🟢 ${name} approved and enrolled! Mobile student account activated.`);
+    setTimeout(() => setAdmissionToast(null), 4000);
+  };
+
+  const handleRejectAdmission = (id: string, name: string) => {
+    setAdmissions((prev) =>
+      prev.map((a) => (a.id === id ? { ...a, status: 'rejected' } : a))
+    );
+    setAdmissionToast(`🔴 Application for ${name} declined.`);
+    setTimeout(() => setAdmissionToast(null), 4000);
+  };
+
   const toggleStudentAttendance = (id: string) => {
     setAttendanceList(
       attendanceList.map((s) => {
@@ -563,6 +608,106 @@ export default function TenantSchoolPortalPage({
                 <span className="text-xs text-slate-500 font-semibold">Today's Presence</span>
                 <div className="text-2xl font-black text-slate-900">96.4%</div>
                 <span className="text-[10px] text-emerald-600 font-bold">Normal Attendance</span>
+              </div>
+            </div>
+
+            {/* Admission Toast Alert */}
+            {admissionToast && (
+              <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold flex items-center justify-between">
+                <span>{admissionToast}</span>
+                <button onClick={() => setAdmissionToast(null)} className="text-emerald-600 hover:text-emerald-900 font-bold">
+                  ✕
+                </button>
+              </div>
+            )}
+
+            {/* Student Admission & Mobile Registration Approvals */}
+            <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-4">
+                <div>
+                  <h3 className="text-base font-black text-slate-900 flex items-center gap-2">
+                    <span>Mobile App Student Registrations</span>
+                    <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 text-amber-800 border border-amber-200">
+                      {admissions.filter((a) => a.status === 'pending').length} Pending Review
+                    </span>
+                  </h3>
+                  <p className="text-xs text-slate-500">
+                    Review and authorize new students who self-registered from the EDUVANTA Mobile App.
+                  </p>
+                </div>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs border-collapse">
+                  <thead>
+                    <tr className="border-b border-slate-200 text-[11px] font-bold text-slate-500 uppercase tracking-wider bg-slate-50/70">
+                      <th className="py-3 px-4">Student Details</th>
+                      <th className="py-3 px-4">Class & Section</th>
+                      <th className="py-3 px-4">Guardian Contacts</th>
+                      <th className="py-3 px-4">Submission</th>
+                      <th className="py-3 px-4">Status</th>
+                      <th className="py-3 px-4 text-right">Approval Action</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {admissions.map((item) => (
+                      <tr key={item.id} className="hover:bg-slate-50/50 transition">
+                        <td className="py-3.5 px-4">
+                          <div className="font-bold text-slate-900 text-sm">{item.name}</div>
+                          <div className="text-slate-500 text-[11px]">{item.email} • {item.phone}</div>
+                          <div className="text-[10px] text-slate-400 font-mono">{item.id}</div>
+                        </td>
+                        <td className="py-3.5 px-4">
+                          <div className="font-semibold text-slate-800">{item.className} - {item.section}</div>
+                          <div className="text-[11px] text-blue-600 font-mono">Assigned Roll: {item.roll}</div>
+                        </td>
+                        <td className="py-3.5 px-4 text-slate-600">
+                          {item.guardian}
+                        </td>
+                        <td className="py-3.5 px-4 text-slate-500 text-[11px]">
+                          {item.date}
+                        </td>
+                        <td className="py-3.5 px-4">
+                          {item.status === 'pending' && (
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200">
+                              PENDING
+                            </span>
+                          )}
+                          {item.status === 'approved' && (
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                              ENROLLED & ACTIVE
+                            </span>
+                          )}
+                          {item.status === 'rejected' && (
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-red-100 text-red-800 border border-red-200">
+                              DECLINED
+                            </span>
+                          )}
+                        </td>
+                        <td className="py-3.5 px-4 text-right">
+                          {item.status === 'pending' ? (
+                            <div className="flex items-center justify-end gap-2">
+                              <button
+                                onClick={() => handleRejectAdmission(item.id, item.name)}
+                                className="px-2.5 py-1 rounded-lg border border-red-200 text-red-600 hover:bg-red-50 text-[11px] font-bold transition"
+                              >
+                                Decline
+                              </button>
+                              <button
+                                onClick={() => handleApproveAdmission(item.id, item.name)}
+                                className="px-3 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold shadow-sm transition"
+                              >
+                                Approve & Enroll
+                              </button>
+                            </div>
+                          ) : (
+                            <span className="text-slate-400 text-[11px] italic">Processed</span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>

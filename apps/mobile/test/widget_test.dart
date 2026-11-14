@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:eduvanta_app/main.dart';
+import 'package:eduvanta_app/core/supabase_client.dart';
 import 'package:eduvanta_app/features/sdui/sdui_models.dart';
 import 'package:eduvanta_app/features/sdui/sdui_renderer.dart';
 
@@ -25,11 +26,29 @@ void main() {
     });
   });
 
-  group('Eduvanta Mobile App Widget Test', () {
-    testWidgets('App renders Student Dashboard with SDUI widgets', (WidgetTester tester) async {
+  group('Eduvanta Mobile App Auth & Navigation Tests', () {
+    testWidgets('App renders AuthScreen with Sign In and Create Account by default', (WidgetTester tester) async {
       await tester.pumpWidget(
         const ProviderScope(
           child: EduvantaMobileApp(),
+        ),
+      );
+
+      // Verify Eduvanta Brand & Tabs
+      expect(find.text('EDUVANTA'), findsOneWidget);
+      expect(find.text('Sign In'), findsOneWidget);
+      expect(find.text('Create Account'), findsOneWidget);
+      expect(find.text('Select Portal Role:'), findsOneWidget);
+    });
+
+    testWidgets('App renders Student Dashboard when authenticated as student', (WidgetTester tester) async {
+      final container = ProviderContainer();
+      container.read(authStateProvider.notifier).loginDemo('student');
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: const EduvantaMobileApp(),
         ),
       );
 

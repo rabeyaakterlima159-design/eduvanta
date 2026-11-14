@@ -35,16 +35,10 @@ class _TeacherDashboardScreenState extends ConsumerState<TeacherDashboardScreen>
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.swap_horiz),
-            tooltip: 'Switch Portal',
+            icon: const Icon(Icons.logout_rounded),
+            tooltip: 'Sign Out',
             onPressed: () {
-              ref.read(userContextProvider.notifier).state = CurrentUserContext(
-                userId: 'student-tanvir-01',
-                schoolId: '22222222-2222-2222-2222-222222222201',
-                schoolName: 'Dhaka Premier International School',
-                role: 'student',
-                fullName: 'Tanvir Ahmed',
-              );
+              ref.read(authStateProvider.notifier).logout();
             },
           ),
         ],
