@@ -157,10 +157,10 @@ const INITIAL_DB: DatabaseState = {
       createdAt: '2026-11-02T10:00:00Z',
     },
     {
-      id: 'usr-student-tanvir',
-      email: 'student@dpis.edu.bd',
+      id: 'usr-student-tasnim',
+      email: 'tasnim@greenhill.edu.bd',
       password: 'password123',
-      fullName: 'Tanvir Ahmed',
+      fullName: 'Tasnim Akter',
       subtitle: 'Verified Enrolled Student',
       role: 'student',
       schoolId: '22222222-2222-2222-2222-222222222201',
@@ -171,7 +171,7 @@ const INITIAL_DB: DatabaseState = {
       rollNumber: '02',
       guardianName: 'Mohammad Kamal',
       guardianPhone: '+880 1711-223344',
-      phone: '+8801819234567',
+      phone: '+8801712987654',
       createdAt: '2026-11-02T10:00:00Z',
     },
     {

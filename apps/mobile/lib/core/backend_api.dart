@@ -22,11 +22,12 @@ class BackendApiService {
       _baseUrls = ['http://localhost:3000', 'http://localhost:3001'];
     } else if (Platform.isAndroid) {
       _baseUrls = [
-        'http://127.0.0.1:3000',
         'http://10.0.2.2:3000',
         'http://192.168.50.81:3000',
-        'http://127.0.0.1:3001',
+        'http://127.0.0.1:3000',
         'http://10.0.2.2:3001',
+        'http://192.168.50.81:3001',
+        'http://127.0.0.1:3001',
       ];
     } else {
       _baseUrls = ['http://localhost:3000', 'http://localhost:3001'];
@@ -40,9 +41,10 @@ class BackendApiService {
     for (final base in _baseUrls) {
       try {
         final res = await _dio.post('$base$path', data: data);
+        print('BackendApiService: POST $base$path succeeded with ${res.statusCode}');
         return res;
-      } catch (_) {
-        // Try next base URL
+      } catch (e) {
+        print('BackendApiService: POST $base$path failed: $e');
       }
     }
     return null;
@@ -55,9 +57,10 @@ class BackendApiService {
     for (final base in _baseUrls) {
       try {
         final res = await _dio.patch('$base$path', data: data);
+        print('BackendApiService: PATCH $base$path succeeded with ${res.statusCode}');
         return res;
-      } catch (_) {
-        // Try next base URL
+      } catch (e) {
+        print('BackendApiService: PATCH $base$path failed: $e');
       }
     }
     return null;
@@ -71,8 +74,8 @@ class BackendApiService {
       try {
         final res = await _dio.get('$base$path');
         return res;
-      } catch (_) {
-        // Try next base URL
+      } catch (e) {
+        // try next
       }
     }
     return null;

@@ -61,8 +61,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const randomSuffix = Math.floor(1000 + Math.random() * 9000);
     const newApp: AdmissionApplication = {
-      id: `APP-${new Date().getFullYear()}-${String(db.admissions.length + 1).padStart(3, '0')}`,
+      id: `GHIS-${new Date().getFullYear()}-${randomSuffix}`,
       fullName: fullName.trim(),
       email: userEmail,
       phone: phone || guardianPhone || '+8801700000000',

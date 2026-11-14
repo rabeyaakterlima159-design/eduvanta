@@ -98,13 +98,13 @@ const initialUsersList: UserItem[] = [
     id: 'u-5',
     role: 'STUDENT',
     roleCategory: 'student',
-    fullName: 'Tanvir Ahmed',
+    fullName: 'Tasnim Akter',
     subtitle: 'Verified Enrolled Student',
-    assignedRollOrId: 'Roll #02\nGHIS-2024-1002',
+    assignedRollOrId: 'Roll #02\nGHIS-2024-2005',
     isRollBadge: true,
     classDept: 'Class 10 • Section A',
     institution: 'Green Hill International School (GHIS-BD)',
-    contact: '+8801819234567',
+    contact: '+8801712987654',
     status: 'Active',
     portalUrl: '/student/portal',
   },
@@ -318,11 +318,24 @@ export default function SuperAdminPage() {
     );
   };
 
+  const pendingAdmissions = admissions.filter((a) => a.status === 'pending');
+  const pendingCount = pendingAdmissions.length;
   const studentCount = users.filter((u) => u.roleCategory === 'student').length;
   const teacherCount = users.filter((u) => u.roleCategory === 'teacher').length;
   const parentCount = users.filter((u) => u.roleCategory === 'parent').length;
   const adminCount = users.filter((u) => u.roleCategory === 'school_admin').length;
   const superCount = users.filter((u) => u.roleCategory === 'super_admin').length;
+  const totalCount = users.length + pendingCount;
+
+  const filteredAdmissions = pendingAdmissions.filter((adm) => {
+    const q = searchTerm.toLowerCase();
+    return (
+      adm.fullName.toLowerCase().includes(q) ||
+      (adm.phone && adm.phone.toLowerCase().includes(q)) ||
+      (adm.desiredRoll && adm.desiredRoll.toLowerCase().includes(q)) ||
+      adm.schoolName.toLowerCase().includes(q)
+    );
+  });
 
   const filteredUsers = users.filter((u) => {
     const matchesTab =
@@ -338,7 +351,7 @@ export default function SuperAdminPage() {
         ? u.roleCategory === 'school_admin'
         : activeTab === 'super'
         ? u.roleCategory === 'super_admin'
-        : true;
+        : false;
 
     const q = searchTerm.toLowerCase();
     const matchesSearch =
@@ -416,6 +429,20 @@ export default function SuperAdminPage() {
                 <Shield className="w-3.5 h-3.5 text-blue-400" />
                 <span>School Admin Portal</span>
               </Link>
+              <button
+                onClick={() => setActiveTab('pending')}
+                className="w-full flex items-center justify-between px-3 py-2 text-xs text-amber-400 hover:bg-[#111D42] rounded-lg transition text-left"
+              >
+                <span className="flex items-center gap-2.5">
+                  <UserCheck className="w-3.5 h-3.5 text-amber-400" />
+                  <span className="font-semibold">School Student Approvals</span>
+                </span>
+                {admissions.filter((a) => a.status === 'pending').length > 0 && (
+                  <span className="px-1.5 py-0.5 bg-amber-500/20 text-amber-400 border border-amber-500/40 rounded text-[10px] font-bold">
+                    {admissions.filter((a) => a.status === 'pending').length}
+                  </span>
+                )}
+              </button>
               <Link
                 href="/student/portal"
                 className="flex items-center gap-2.5 px-3 py-2 text-xs text-slate-300 hover:bg-[#111D42] rounded-lg transition"
@@ -511,12 +538,14 @@ export default function SuperAdminPage() {
             </button>
           </div>
 
-          {/* 4 TOP METRIC CARDS (Screenshot 5 & 7) */}
+          {/* 4 TOP METRIC CARDS (Screenshot 5 & 11) */}
           <div className="grid grid-cols-4 gap-4">
             <div className="p-5 rounded-2xl bg-[#0D1836] border border-[#192754] shadow-lg">
               <p className="text-[11px] font-semibold text-slate-400">Total Enrolled Students</p>
               <p className="text-3xl font-black text-sky-400 mt-1">{studentCount}</p>
-              <p className="text-[10px] text-slate-500 mt-1">All assigned with distinct rolls</p>
+              <p className="text-xs font-semibold text-amber-400 mt-1">
+                {pendingCount > 0 ? `+${pendingCount} pending approval` : 'All assigned with distinct rolls'}
+              </p>
             </div>
             <div className="p-5 rounded-2xl bg-[#0D1836] border border-[#192754] shadow-lg">
               <p className="text-[11px] font-semibold text-slate-400">Faculty & Teachers</p>
@@ -535,7 +564,7 @@ export default function SuperAdminPage() {
             </div>
           </div>
 
-          {/* FILTER TABS & SEARCH BAR */}
+          {/* FILTER TABS & SEARCH BAR (Screenshot 11) */}
           <div className="flex items-center justify-between gap-4">
             {/* Filter Tabs */}
             <div className="flex items-center bg-[#0D1836] p-1 rounded-xl border border-[#192754] text-xs">
@@ -545,7 +574,7 @@ export default function SuperAdminPage() {
                   activeTab === 'all' ? 'bg-[#5B46E8] text-white shadow-md' : 'text-slate-400 hover:text-white'
                 }`}
               >
-                All Users ({users.length})
+                All Users ({totalCount})
               </button>
               <button
                 onClick={() => setActiveTab('student')}
@@ -554,6 +583,14 @@ export default function SuperAdminPage() {
                 }`}
               >
                 🎓 Students ({studentCount})
+              </button>
+              <button
+                onClick={() => setActiveTab('pending')}
+                className={`px-3.5 py-1.5 rounded-lg font-bold transition flex items-center gap-1.5 ${
+                  activeTab === 'pending' ? 'bg-[#5B46E8] text-white shadow-md' : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                <span>⏳ Pending Registrations ({pendingCount})</span>
               </button>
               <button
                 onClick={() => setActiveTab('teacher')}
@@ -587,19 +624,6 @@ export default function SuperAdminPage() {
               >
                 👑 Super Admins ({superCount})
               </button>
-              <button
-                onClick={() => setActiveTab('admissions')}
-                className={`px-3.5 py-1.5 rounded-lg font-bold transition flex items-center gap-1.5 ${
-                  activeTab === 'admissions' ? 'bg-[#5B46E8] text-white shadow-md' : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                <span>📩 Admissions</span>
-                {admissions.filter((a) => a.status === 'pending').length > 0 && (
-                  <span className="px-1.5 py-0.5 bg-amber-400 text-slate-900 rounded-full text-[10px] font-black">
-                    {admissions.filter((a) => a.status === 'pending').length}
-                  </span>
-                )}
-              </button>
             </div>
 
             {/* Search Input */}
@@ -615,103 +639,98 @@ export default function SuperAdminPage() {
             </div>
           </div>
 
-          {/* MAIN DATA TABLE OR ADMISSIONS TABLE */}
+          {/* MAIN UNIFIED DATA TABLE (Screenshot 11) */}
           <div className="bg-[#0D1836] border border-[#192754] rounded-2xl overflow-hidden shadow-2xl">
-            {activeTab === 'admissions' ? (
-              <table className="w-full text-left text-xs border-collapse">
-                <thead>
-                  <tr className="border-b border-[#192754] text-slate-400 bg-[#091128]/60 text-[11px] uppercase tracking-wider">
-                    <th className="py-3.5 px-4 font-bold">App ID</th>
-                    <th className="py-3.5 px-4 font-bold">Student Applicant</th>
-                    <th className="py-3.5 px-4 font-bold">Requested Roll</th>
-                    <th className="py-3.5 px-4 font-bold">Class & Section</th>
-                    <th className="py-3.5 px-4 font-bold">Guardian Mobile</th>
-                    <th className="py-3.5 px-4 font-bold">Status</th>
-                    <th className="py-3.5 px-4 font-bold text-right">Approval Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[#192754]/60">
-                  {admissions.length === 0 ? (
-                    <tr>
-                      <td colSpan={7} className="py-8 text-center text-slate-400">
-                        No student admission applications received yet.
+            <table className="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr className="border-b border-[#192754] text-slate-400 bg-[#091128]/60 text-[11px] uppercase tracking-wider">
+                  <th className="py-3.5 px-4 font-bold">Role</th>
+                  <th className="py-3.5 px-4 font-bold">Full Name</th>
+                  <th className="py-3.5 px-4 font-bold">Assigned Roll / ID</th>
+                  <th className="py-3.5 px-4 font-bold">Class / Dept</th>
+                  <th className="py-3.5 px-4 font-bold">Institution</th>
+                  <th className="py-3.5 px-4 font-bold">Contact</th>
+                  <th className="py-3.5 px-4 font-bold">Status</th>
+                  <th className="py-3.5 px-4 font-bold text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#192754]/60">
+                {/* 1. Pending Registrations Rows (Visible in 'student', 'pending', and 'all' tabs) */}
+                {(activeTab === 'student' || activeTab === 'pending' || activeTab === 'all') &&
+                  filteredAdmissions.map((adm) => (
+                    <tr key={adm.id} className="hover:bg-[#122046]/60 transition bg-[#172554]/20">
+                      {/* Role Badge */}
+                      <td className="py-3.5 px-4">
+                        <span className="inline-block px-2.5 py-0.5 rounded-md text-[10px] font-black tracking-wider bg-sky-900/40 text-sky-300 border border-sky-500/30">
+                          STUDENT
+                        </span>
                       </td>
-                    </tr>
-                  ) : (
-                    admissions.map((adm) => (
-                      <tr key={adm.id} className="hover:bg-[#122046]/60 transition">
-                        <td className="py-3.5 px-4 font-mono text-sky-400 font-bold">{adm.id}</td>
-                        <td className="py-3.5 px-4">
-                          <p className="font-bold text-white text-xs">{adm.fullName}</p>
-                          <p className="text-[10px] text-slate-400">{adm.email}</p>
-                        </td>
-                        <td className="py-3.5 px-4">
-                          <span className="inline-block px-2.5 py-0.5 rounded bg-blue-600/30 text-blue-400 font-bold font-mono text-[11px] border border-blue-500/30">
+
+                      {/* Full Name */}
+                      <td className="py-3.5 px-4">
+                        <p className="font-bold text-white text-xs">{adm.fullName}</p>
+                        <p className="text-[10px] text-slate-400 mt-0.5">{adm.email || 'Application Pending'}</p>
+                      </td>
+
+                      {/* Assigned Roll / ID Badge */}
+                      <td className="py-3.5 px-4">
+                        <div className="space-y-0.5">
+                          <span className="inline-block px-2 py-0.5 rounded bg-blue-600/30 text-blue-400 font-bold font-mono text-[11px] border border-blue-500/30">
                             Roll #{adm.desiredRoll}
                           </span>
-                        </td>
-                        <td className="py-3.5 px-4 text-slate-300 font-medium">
-                          {adm.className} • {adm.section}
-                        </td>
-                        <td className="py-3.5 px-4 font-mono text-slate-300">
-                          {adm.guardianPhone || adm.phone}
-                        </td>
-                        <td className="py-3.5 px-4">
-                          <span
-                            className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold ${
-                              adm.status === 'approved'
-                                ? 'bg-emerald-900/40 text-emerald-400 border border-emerald-500/30'
-                                : adm.status === 'rejected'
-                                ? 'bg-rose-900/40 text-rose-400 border border-rose-500/30'
-                                : 'bg-amber-900/40 text-amber-300 border border-amber-500/30'
-                            }`}
+                          <p className="text-[10px] font-mono text-slate-400">
+                            {adm.id.startsWith('GHIS') ? adm.id : `GHIS-2025-${adm.id.replace(/\D/g, '').slice(-4) || '8478'}`}
+                          </p>
+                        </div>
+                      </td>
+
+                      {/* Class / Dept */}
+                      <td className="py-3.5 px-4 text-slate-300 font-medium">
+                        {adm.className} • {adm.section}
+                      </td>
+
+                      {/* Institution */}
+                      <td className="py-3.5 px-4 text-slate-300 font-medium">
+                        {adm.schoolName}
+                      </td>
+
+                      {/* Contact */}
+                      <td className="py-3.5 px-4 font-mono text-slate-400">
+                        {adm.phone || adm.guardianPhone}
+                      </td>
+
+                      {/* Status: Amber Pending App Registration */}
+                      <td className="py-3.5 px-4">
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-amber-950/40 text-amber-300 border border-amber-500/40 text-[10px] font-bold">
+                          <span>⏳</span>
+                          <span>Pending App Registration</span>
+                        </span>
+                      </td>
+
+                      {/* Actions: Approve & Reject */}
+                      <td className="py-3.5 px-4 text-right">
+                        <div className="flex items-center justify-end gap-1.5">
+                          <button
+                            onClick={() => handleApproveAdmission(adm.id, adm.fullName)}
+                            title="Approve student and enable mobile app login"
+                            className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-bold text-[11px] flex items-center gap-1 shadow transition"
                           >
-                            {adm.status === 'approved' ? 'ENROLLED' : adm.status.toUpperCase()}
-                          </span>
-                        </td>
-                        <td className="py-3.5 px-4 text-right">
-                          {adm.status === 'pending' ? (
-                            <div className="flex items-center justify-end gap-2">
-                              <button
-                                onClick={() => handleApproveAdmission(adm.id, adm.fullName)}
-                                className="px-3 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-bold text-[11px] flex items-center gap-1 shadow transition"
-                              >
-                                <span>✅ Approve & Enroll (অনুমোদন)</span>
-                              </button>
-                              <button
-                                onClick={() => handleRejectAdmission(adm.id, adm.fullName)}
-                                className="px-2.5 py-1 bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-500/30 rounded-lg text-[11px] font-bold transition"
-                              >
-                                <span>❌ Reject</span>
-                              </button>
-                            </div>
-                          ) : (
-                            <span className="text-[11px] text-slate-400 font-medium">
-                              {adm.status === 'approved' ? 'Active in Database' : 'Declined'}
-                            </span>
-                          )}
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            ) : (
-              <table className="w-full text-left text-xs border-collapse">
-                <thead>
-                  <tr className="border-b border-[#192754] text-slate-400 bg-[#091128]/60 text-[11px] uppercase tracking-wider">
-                    <th className="py-3.5 px-4 font-bold">Role</th>
-                    <th className="py-3.5 px-4 font-bold">Full Name</th>
-                    <th className="py-3.5 px-4 font-bold">Assigned Roll / ID</th>
-                    <th className="py-3.5 px-4 font-bold">Class / Dept</th>
-                    <th className="py-3.5 px-4 font-bold">Institution</th>
-                    <th className="py-3.5 px-4 font-bold">Contact</th>
-                    <th className="py-3.5 px-4 font-bold">Status</th>
-                    <th className="py-3.5 px-4 font-bold text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[#192754]/60">
-                  {filteredUsers.map((u) => (
+                            <span>✓ Approve Account</span>
+                          </button>
+                          <button
+                            onClick={() => handleRejectAdmission(adm.id, adm.fullName)}
+                            className="px-2.5 py-1.5 bg-rose-950/40 hover:bg-rose-900/60 text-rose-300 border border-rose-500/30 rounded-lg text-[11px] font-bold transition flex items-center gap-1"
+                          >
+                            <span>✕ Reject</span>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+
+                {/* 2. Registered Users Rows (Hidden in 'pending' tab) */}
+                {activeTab !== 'pending' &&
+                  filteredUsers.map((u) => (
                     <tr key={u.id} className="hover:bg-[#122046]/60 transition">
                       {/* Role Badge */}
                       <td className="py-3.5 px-4">
@@ -765,15 +784,22 @@ export default function SuperAdminPage() {
                       {/* Contact */}
                       <td className="py-3.5 px-4 font-mono text-slate-400">{u.contact}</td>
 
-                      {/* Status */}
+                      {/* Status: Active (Supabase) or Suspended */}
                       <td className="py-3.5 px-4">
-                        <span
-                          className={`text-[11px] font-bold ${
-                            u.status === 'Active' ? 'text-emerald-400' : 'text-rose-400'
-                          }`}
-                        >
-                          {u.status}
-                        </span>
+                        {u.role === 'STUDENT' && u.status === 'Active' ? (
+                          <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-emerald-400">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                            <span>• Active (Supabase)</span>
+                          </span>
+                        ) : (
+                          <span
+                            className={`text-[11px] font-bold ${
+                              u.status === 'Active' ? 'text-emerald-400' : 'text-rose-400'
+                            }`}
+                          >
+                            {u.status}
+                          </span>
+                        )}
                       </td>
 
                       {/* Actions: Direct Login Preview, Suspend, Delete */}
@@ -801,9 +827,24 @@ export default function SuperAdminPage() {
                       </td>
                     </tr>
                   ))}
-                </tbody>
-              </table>
-            )}
+
+                {/* Empty State */}
+                {activeTab === 'pending' && filteredAdmissions.length === 0 && (
+                  <tr>
+                    <td colSpan={8} className="py-8 text-center text-slate-400">
+                      No pending student registrations at this time.
+                    </td>
+                  </tr>
+                )}
+                {activeTab !== 'pending' && filteredUsers.length === 0 && filteredAdmissions.length === 0 && (
+                  <tr>
+                    <td colSpan={8} className="py-8 text-center text-slate-400">
+                      No users found matching this filter or search.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           </div>
         </main>
       </div>

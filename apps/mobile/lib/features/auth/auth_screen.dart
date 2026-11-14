@@ -482,6 +482,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with SingleTickerProvid
   void _showStudentRegistrationDialog() {
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (ctx) => StatefulBuilder(
         builder: (context, setDialogState) => Dialog(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
