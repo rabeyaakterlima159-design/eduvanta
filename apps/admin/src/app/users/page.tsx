@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AdminHeader from '@/components/AdminHeader';
 import {
   Users,
@@ -98,6 +98,37 @@ export default function PlatformUsersPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
+  useEffect(() => {
+    fetch('/api/users')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && Array.isArray(data.users)) {
+          const mapped: UserRecord[] = data.users.map((u: any) => ({
+            id: u.id,
+            name: u.fullName,
+            email: u.email,
+            role:
+              u.role === 'super_admin'
+                ? 'Super Admin'
+                : u.role === 'school_admin'
+                ? 'School Admin'
+                : u.role.charAt(0).toUpperCase() + u.role.slice(1),
+            schoolName: u.schoolName,
+            status: u.status,
+            lastLogin: u.role === 'super_admin' ? 'Active Now' : 'Recently',
+            details:
+              u.studentClass && u.studentSection
+                ? `${u.studentClass} - ${u.studentSection} • Roll: ${u.rollNumber || 'Auto'}`
+                : u.department
+                ? `Department of ${u.department}`
+                : `${u.role} Access`,
+          }));
+          setUsers(mapped);
+        }
+      })
+      .catch((err) => console.log('Notice: using initial user state', err));
+  }, []);
+
   // Form state for creating user
   const [newFullName, setNewFullName] = useState('');
   const [newEmail, setNewEmail] = useState('');
@@ -144,6 +175,29 @@ export default function PlatformUsersPage() {
       lastLogin: 'Never (Newly Created)',
       details,
     };
+
+    const mappedRole =
+      newRole === 'School Admin'
+        ? 'school_admin'
+        : (newRole.toLowerCase() as any);
+
+    // Persist to Shared Database API
+    fetch('/api/users', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        fullName: newFullName,
+        email: newEmail,
+        password: newPassword,
+        role: mappedRole,
+        schoolName: newSchool,
+        studentClass: newRole === 'Student' ? newClass : undefined,
+        studentSection: newRole === 'Student' ? newSection : undefined,
+        rollNumber: newRole === 'Student' ? newRoll : undefined,
+        guardianName: newRole === 'Student' ? newLinkedChild : undefined,
+        department: newRole === 'Teacher' ? newDept : undefined,
+      }),
+    }).catch((err) => console.error('Failed to sync user with server:', err));
 
     setUsers([newUser, ...users]);
     setIsCreateModalOpen(false);

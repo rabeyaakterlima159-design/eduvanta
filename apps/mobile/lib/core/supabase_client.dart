@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'backend_api.dart';
 
 const String supabaseUrl = String.fromEnvironment(
   'SUPABASE_URL',
@@ -329,6 +330,22 @@ class RegistrationNotifier extends StateNotifier<List<RegistrationApplication>> 
     );
 
     state = [application, ...state];
+
+    // Asynchronously synchronize application with central database
+    BackendApiService().submitAdmissionApplication({
+      'fullName': fullName,
+      'email': email,
+      'phone': phone,
+      'schoolId': schoolId,
+      'schoolName': schoolName,
+      'className': className,
+      'section': section,
+      'desiredRoll': desiredRoll,
+      'guardianName': guardianName,
+      'guardianPhone': guardianPhone,
+      'password': password,
+    });
+
     return newId;
   }
 
@@ -405,6 +422,42 @@ class AuthController extends StateNotifier<AuthState> {
     state = state.copyWith(isLoading: true, errorMessage: null);
 
     final normalizedEmail = email.trim().toLowerCase();
+
+    // 0. Attempt live authentication with central shared database API
+    try {
+      final remoteResult = await BackendApiService().login(
+        email: normalizedEmail,
+        password: password,
+      );
+
+      if (remoteResult != null) {
+        if (remoteResult['success'] == true && remoteResult['user'] != null) {
+          final u = remoteResult['user'] as Map<String, dynamic>;
+          final serverUser = CurrentUserContext(
+            userId: u['id']?.toString() ?? 'usr-${DateTime.now().millisecondsSinceEpoch}',
+            schoolId: u['schoolId']?.toString() ?? '22222222-2222-2222-2222-222222222201',
+            schoolName: u['schoolName']?.toString() ?? 'Dhaka Premier International School',
+            role: u['role']?.toString() ?? role,
+            fullName: u['fullName']?.toString() ?? 'Platform User',
+            email: u['email']?.toString() ?? normalizedEmail,
+            status: u['status']?.toString() ?? 'active',
+            studentClass: u['studentClass']?.toString(),
+            studentSection: u['studentSection']?.toString(),
+            rollNumber: u['rollNumber']?.toString(),
+          );
+          state = AuthState(isLoggedIn: true, user: serverUser);
+          return true;
+        } else if (remoteResult['error'] != null) {
+          state = state.copyWith(
+            isLoading: false,
+            errorMessage: remoteResult['error'].toString(),
+          );
+          return false;
+        }
+      }
+    } catch (_) {
+      // Fallback to local accounts directory if server is offline
+    }
 
     // 1. Check Super Admin Credentials (Sohel229229@gmail.com / shariar123)
     if (normalizedEmail == 'sohel229229@gmail.com') {

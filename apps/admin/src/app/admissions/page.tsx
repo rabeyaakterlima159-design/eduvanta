@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AdminHeader from '@/components/AdminHeader';
 import {
   UserCheck,
@@ -108,12 +108,46 @@ export default function AdmissionsPage() {
   const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('all');
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
+  useEffect(() => {
+    fetch('/api/admissions')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && Array.isArray(data.applications)) {
+          const mapped: AdmissionApplication[] = data.applications.map((a: any) => ({
+            id: a.id,
+            fullName: a.fullName,
+            email: a.email,
+            phone: a.phone,
+            schoolId: a.schoolId,
+            schoolName: a.schoolName,
+            className: a.className,
+            section: a.section,
+            rollNumber: a.desiredRoll,
+            guardianName: a.guardianName,
+            guardianPhone: a.guardianPhone,
+            status: a.status,
+            submittedAt: a.submittedAt ? new Date(a.submittedAt).toLocaleString() : 'Recent',
+            remarks: a.reviewNotes,
+          }));
+          setApplications(mapped);
+        }
+      })
+      .catch((err) => console.log('Using initial applications state', err));
+  }, []);
+
   const showToast = (msg: string) => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(null), 4000);
   };
 
   const handleApprove = (id: string, name: string, school: string) => {
+    // Sync with Shared Database
+    fetch('/api/admissions', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, action: 'approve' }),
+    }).catch((err) => console.error('Failed to sync approval:', err));
+
     setApplications((prev) =>
       prev.map((app) =>
         app.id === id
@@ -125,6 +159,13 @@ export default function AdmissionsPage() {
   };
 
   const handleReject = (id: string, name: string) => {
+    // Sync with Shared Database
+    fetch('/api/admissions', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, action: 'reject' }),
+    }).catch((err) => console.error('Failed to sync rejection:', err));
+
     setApplications((prev) =>
       prev.map((app) =>
         app.id === id

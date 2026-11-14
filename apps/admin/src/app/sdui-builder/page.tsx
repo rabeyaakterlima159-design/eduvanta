@@ -131,8 +131,33 @@ export default function SDUIBuilderPage() {
   };
 
   const handlePublish = () => {
-    setVersion((v) => v + 1);
+    const nextVer = version + 1;
+    setVersion(nextVer);
     setIsSaved(true);
+
+    fetch('/api/sdui/config', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        version: nextVer,
+        maintenanceMode,
+        maintenanceMessage,
+        theme: {
+          primaryColor: themePrimary,
+          secondaryColor: themeSecondary,
+          accentColor: themeAccent,
+          backgroundColor: '#F5F8FC',
+        },
+        heroBanner: {
+          title: widgets.find((w) => w.id === 'hero_banner')?.title || 'Welcome to Eduvanta',
+          subtitle: 'Learn • Grow • Excel',
+          badge: 'Live Remote Config',
+          actionText: 'Explore More',
+          actionUrl: '/notices',
+        },
+      }),
+    }).catch((err) => console.error('Failed to sync SDUI config:', err));
+
     setTimeout(() => setIsSaved(false), 3000);
   };
 
