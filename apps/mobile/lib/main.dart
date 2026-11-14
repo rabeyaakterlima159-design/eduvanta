@@ -42,6 +42,7 @@ class EduvantaMobileApp extends ConsumerWidget {
         return const TeacherDashboardScreen();
       case 'parent':
         return const ParentDashboardScreen();
+      case 'super_admin':
       case 'school_admin':
       case 'staff':
         return const SchoolAdminDashboardScreen();

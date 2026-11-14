@@ -1,0 +1,188 @@
+{
+  "users": [
+    {
+      "id": "usr-super-admin-01",
+      "email": "Sohel229229@gmail.com",
+      "password": "shariar123",
+      "fullName": "Sohel Shariar",
+      "subtitle": "Principal Super Administrator & Platform Owner",
+      "role": "super_admin",
+      "schoolId": "22222222-2222-2222-2222-222222222201",
+      "schoolName": "SIS Digital Ecosystem (Central Platform) (SIS-GLOBAL)",
+      "status": "active",
+      "phone": "+880 1712-000000",
+      "createdAt": "2026-11-01T00:00:00Z"
+    },
+    {
+      "id": "usr-admin-karim",
+      "email": "principal@greenhill.edu.bd",
+      "password": "password123",
+      "fullName": "Principal M. A. Karim",
+      "subtitle": "Headmaster & Principal",
+      "role": "school_admin",
+      "schoolId": "22222222-2222-2222-2222-222222222201",
+      "schoolName": "Green Hill International School (GHIS-BD)",
+      "department": "Administration",
+      "status": "active",
+      "phone": "+8801711000001",
+      "createdAt": "2026-11-01T08:00:00Z"
+    },
+    {
+      "id": "usr-teacher-jannatul",
+      "email": "jannatul@greenhill.edu.bd",
+      "password": "password123",
+      "fullName": "Jannatul Ferdous",
+      "subtitle": "Senior Teacher",
+      "role": "teacher",
+      "schoolId": "22222222-2222-2222-2222-222222222201",
+      "schoolName": "Green Hill International School (GHIS-BD)",
+      "department": "Science (Physics)",
+      "status": "active",
+      "phone": "+8801812345678",
+      "createdAt": "2026-11-02T11:00:00Z"
+    },
+    {
+      "id": "usr-student-arif",
+      "email": "arif.hossain@greenhill.edu.bd",
+      "password": "password123",
+      "fullName": "Arif Hossain",
+      "subtitle": "Verified Enrolled Student",
+      "role": "student",
+      "schoolId": "22222222-2222-2222-2222-222222222201",
+      "schoolName": "Green Hill International School (GHIS-BD)",
+      "status": "active",
+      "studentClass": "Class 10",
+      "studentSection": "Section A",
+      "rollNumber": "01",
+      "guardianName": "Mohammad Kamal",
+      "guardianPhone": "+880 1711-223344",
+      "phone": "+8801712987654",
+      "createdAt": "2026-11-02T10:00:00Z"
+    },
+    {
+      "id": "usr-student-tanvir",
+      "email": "student@dpis.edu.bd",
+      "password": "password123",
+      "fullName": "Tanvir Ahmed",
+      "subtitle": "Verified Enrolled Student",
+      "role": "student",
+      "schoolId": "22222222-2222-2222-2222-222222222201",
+      "schoolName": "Green Hill International School (GHIS-BD)",
+      "status": "active",
+      "studentClass": "Class 10",
+      "studentSection": "Section A",
+      "rollNumber": "02",
+      "guardianName": "Mohammad Kamal",
+      "guardianPhone": "+880 1711-223344",
+      "phone": "+8801819234567",
+      "createdAt": "2026-11-02T10:00:00Z"
+    },
+    {
+      "id": "usr-parent-kamal",
+      "email": "parent@greenhill.edu.bd",
+      "password": "password123",
+      "fullName": "Mohammad Kamal",
+      "subtitle": "Guardian of Arif & Tanvir",
+      "role": "parent",
+      "schoolId": "22222222-2222-2222-2222-222222222201",
+      "schoolName": "Green Hill International School (GHIS-BD)",
+      "status": "active",
+      "phone": "+8801711223344",
+      "createdAt": "2026-11-02T12:00:00Z"
+    },
+    {
+      "id": "usr-APP-2026-002",
+      "email": "sohelstudent@greenhill.edu.bd",
+      "password": "shariarstudent123",
+      "fullName": "Sohel Student",
+      "subtitle": "Verified Enrolled Student",
+      "role": "student",
+      "schoolId": "22222222-2222-2222-2222-222222222201",
+      "schoolName": "Green Hill International School (GHIS-BD)",
+      "status": "active",
+      "studentClass": "Class 10",
+      "studentSection": "Section A",
+      "rollNumber": "05",
+      "guardianName": "Guardian",
+      "guardianPhone": "01712345678",
+      "phone": "01712345678",
+      "createdAt": "2026-11-14T06:16:35.091Z"
+    }
+  ],
+  "admissions": [
+    {
+      "id": "APP-2026-002",
+      "fullName": "Sohel Student",
+      "email": "sohelstudent@greenhill.edu.bd",
+      "phone": "01712345678",
+      "schoolId": "22222222-2222-2222-2222-222222222201",
+      "schoolName": "Green Hill International School (GHIS-BD)",
+      "className": "Class 10",
+      "section": "Section A",
+      "desiredRoll": "05",
+      "guardianName": "Guardian",
+      "guardianPhone": "01712345678",
+      "password": "shariarstudent123",
+      "status": "approved",
+      "submittedAt": "2026-11-14T06:16:12.928Z",
+      "reviewNotes": "Approved & Enrolled by School Admin",
+      "reviewedAt": "2026-11-14T06:16:35.091Z"
+    },
+    {
+      "id": "EDV-REG-2026-001",
+      "fullName": "Sumon Das",
+      "email": "sumon.das@gmail.com",
+      "phone": "+880 1719-112233",
+      "schoolId": "22222222-2222-2222-2222-222222222201",
+      "schoolName": "Green Hill International School (GHIS-BD)",
+      "className": "Class 10",
+      "section": "Section A",
+      "desiredRoll": "03",
+      "guardianName": "Subir Das",
+      "guardianPhone": "+880 1819-334455",
+      "password": "password123",
+      "status": "pending",
+      "submittedAt": "2026-11-14T07:15:00Z"
+    }
+  ],
+  "sdui": {
+    "version": 1,
+    "maintenanceMode": false,
+    "maintenanceMessage": "System undergoing routine optimization.",
+    "theme": {
+      "primaryColor": "#102A56",
+      "secondaryColor": "#2563EB",
+      "accentColor": "#F5B82E",
+      "backgroundColor": "#F5F8FC"
+    },
+    "heroBanner": {
+      "title": "Welcome to Eduvanta",
+      "subtitle": "One Platform. Every Campus. Smarter Education.",
+      "badge": "Academic Term 2026-27",
+      "actionText": "Explore More",
+      "actionUrl": "/academic/explore"
+    },
+    "announcements": [
+      {
+        "id": "ann-1",
+        "title": "Mid Term Examination 2025 Schedule",
+        "date": "Nov 20, 2026",
+        "type": "event",
+        "priority": "high"
+      },
+      {
+        "id": "ann-2",
+        "title": "Digital bKash Fee Payment Gateway Active",
+        "date": "Nov 18, 2026",
+        "type": "academic",
+        "priority": "high"
+      }
+    ],
+    "quickStats": {
+      "attendance": "98.5%",
+      "assignments": "12 Active",
+      "results": "88% GPA 5.0",
+      "feeDue": "৳0 Due"
+    }
+  }
+}

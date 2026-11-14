@@ -357,6 +357,8 @@ class RegistrationNotifier extends StateNotifier<List<RegistrationApplication>> 
         else
           app,
     ];
+    // Sync approval to shared central database
+    BackendApiService().updateAdmissionStatus(id, 'approve');
   }
 
   void rejectApplication(String id, String reason) {
@@ -367,6 +369,36 @@ class RegistrationNotifier extends StateNotifier<List<RegistrationApplication>> 
         else
           app,
     ];
+    // Sync rejection to shared central database
+    BackendApiService().updateAdmissionStatus(id, 'reject', reason);
+  }
+
+  Future<void> syncFromBackend() async {
+    try {
+      final remote = await BackendApiService().fetchAdmissions();
+      if (remote != null && remote.isNotEmpty) {
+        final list = remote.map((m) {
+          return RegistrationApplication(
+            id: m['id']?.toString() ?? 'EDV-REG-000',
+            fullName: m['fullName']?.toString() ?? 'Student',
+            email: m['email']?.toString() ?? '',
+            phone: m['phone']?.toString() ?? '',
+            schoolId: m['schoolId']?.toString() ?? '22222222-2222-2222-2222-222222222201',
+            schoolName: m['schoolName']?.toString() ?? 'Green Hill International School',
+            className: m['className']?.toString() ?? 'Class 10',
+            section: m['section']?.toString() ?? 'Section A',
+            desiredRoll: m['desiredRoll']?.toString() ?? '01',
+            guardianName: m['guardianName']?.toString() ?? 'Guardian',
+            guardianPhone: m['guardianPhone']?.toString() ?? '',
+            password: m['password']?.toString() ?? 'password123',
+            status: m['status']?.toString() ?? 'pending',
+            submittedAt: DateTime.tryParse(m['submittedAt']?.toString() ?? '') ?? DateTime.now(),
+            reviewNotes: m['reviewNotes']?.toString(),
+          );
+        }).toList();
+        state = list;
+      }
+    } catch (_) {}
   }
 }
 

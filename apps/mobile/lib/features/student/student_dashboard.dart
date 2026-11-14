@@ -54,9 +54,11 @@ class _StudentDashboardScreenState extends ConsumerState<StudentDashboardScreen>
             CircleAvatar(
               radius: 18,
               backgroundColor: Colors.white.withValues(alpha: 0.2),
-              child: const Text(
-                'TA',
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12),
+              child: Text(
+                userContext.fullName.isNotEmpty
+                    ? userContext.fullName.split(' ').map((n) => n.isNotEmpty ? n[0] : '').take(2).join().toUpperCase()
+                    : 'ST',
+                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12),
               ),
             ),
             const SizedBox(width: 10),

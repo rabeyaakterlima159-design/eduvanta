@@ -12,22 +12,24 @@ class BackendApiService {
   BackendApiService._internal() {
     _dio = Dio(
       BaseOptions(
-        connectTimeout: const Duration(milliseconds: 1200),
-        receiveTimeout: const Duration(milliseconds: 1200),
+        connectTimeout: const Duration(milliseconds: 3500),
+        receiveTimeout: const Duration(milliseconds: 3500),
         headers: {'Content-Type': 'application/json'},
       ),
     );
 
     if (kIsWeb) {
-      _baseUrls = ['http://localhost:3001'];
+      _baseUrls = ['http://localhost:3000', 'http://localhost:3001'];
     } else if (Platform.isAndroid) {
       _baseUrls = [
-        'http://10.0.2.2:3001',
-        'http://192.168.50.81:3001',
+        'http://127.0.0.1:3000',
+        'http://10.0.2.2:3000',
+        'http://192.168.50.81:3000',
         'http://127.0.0.1:3001',
+        'http://10.0.2.2:3001',
       ];
     } else {
-      _baseUrls = ['http://localhost:3001'];
+      _baseUrls = ['http://localhost:3000', 'http://localhost:3001'];
     }
   }
 
@@ -38,6 +40,21 @@ class BackendApiService {
     for (final base in _baseUrls) {
       try {
         final res = await _dio.post('$base$path', data: data);
+        return res;
+      } catch (_) {
+        // Try next base URL
+      }
+    }
+    return null;
+  }
+
+  Future<Response?> _tryPatch(String path, Map<String, dynamic> data) async {
+    if (!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST')) {
+      return null;
+    }
+    for (final base in _baseUrls) {
+      try {
+        final res = await _dio.patch('$base$path', data: data);
         return res;
       } catch (_) {
         // Try next base URL
@@ -80,10 +97,44 @@ class BackendApiService {
   /// Submit student admission application to the shared website database
   Future<bool> submitAdmissionApplication(Map<String, dynamic> appData) async {
     final response = await _tryPost('/api/admissions', appData);
-    if (response != null && response.statusCode == 201) {
+    if (response != null && (response.statusCode == 200 || response.statusCode == 201)) {
       return true;
     }
     return false;
+  }
+
+  /// Update admission status (approve/reject) in shared database
+  Future<bool> updateAdmissionStatus(String id, String action, [String? notes]) async {
+    final response = await _tryPatch('/api/admissions', {
+      'id': id,
+      'action': action,
+      'reviewNotes': notes,
+    });
+    return response != null && response.statusCode == 200;
+  }
+
+  /// Fetch all admissions from shared database
+  Future<List<Map<String, dynamic>>?> fetchAdmissions() async {
+    final response = await _tryGet('/api/admissions');
+    if (response != null && response.data is Map<String, dynamic>) {
+      final list = response.data['applications'] as List?;
+      if (list != null) {
+        return list.map((e) => Map<String, dynamic>.from(e as Map)).toList();
+      }
+    }
+    return null;
+  }
+
+  /// Fetch all users from shared database
+  Future<List<Map<String, dynamic>>?> fetchUsers() async {
+    final response = await _tryGet('/api/users');
+    if (response != null && response.data is Map<String, dynamic>) {
+      final list = response.data['users'] as List?;
+      if (list != null) {
+        return list.map((e) => Map<String, dynamic>.from(e as Map)).toList();
+      }
+    }
+    return null;
   }
 
   /// Fetch remote SDUI configuration

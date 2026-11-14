@@ -34,17 +34,23 @@ export default function LoginPage() {
       const normalizedEmail = email.trim().toLowerCase();
 
       // Check Super Admin
-      if (normalizedEmail === 'sohel229229@gmail.com') {
+      if (role === 'super_admin' || normalizedEmail === 'sohel229229@gmail.com') {
         if (password !== 'shariar123') {
           setErrorMsg('Invalid password for Super Admin account.');
           return;
         }
-        window.location.href = 'http://localhost:3001';
+        window.location.href = '/super-admin';
         return;
       }
 
       if (password.length < 4) {
         setErrorMsg('Please enter a valid password.');
+        return;
+      }
+
+      // If student Arif Hossain or general student portal
+      if (role === 'student' || normalizedEmail.includes('arif')) {
+        window.location.href = '/student/portal';
         return;
       }
 
@@ -121,6 +127,20 @@ export default function LoginPage() {
                 🏛️ School Admin
               </button>
             </div>
+            <button
+              type="button"
+              onClick={() => {
+                setRole('super_admin');
+                setEmail('Sohel229229@gmail.com');
+              }}
+              className={`w-full mt-2 py-2 px-3 rounded-xl border text-center transition text-xs font-bold ${
+                role === 'super_admin'
+                  ? 'border-indigo-600 bg-indigo-50 text-indigo-700'
+                  : 'border-slate-200 text-slate-600 hover:bg-slate-50'
+              }`}
+            >
+              👑 Super Admin (Master Hub)
+            </button>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-4 text-xs">

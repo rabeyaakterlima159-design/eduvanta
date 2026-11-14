@@ -180,31 +180,40 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with SingleTickerProvid
     final guardianPhone = _regGuardianPhoneController.text.trim();
     final password = _regPasswordController.text;
 
-    if (fullName.isEmpty || email.isEmpty || phone.isEmpty || password.isEmpty) {
+    final resolvedPhone = phone.isNotEmpty
+        ? phone
+        : (guardianPhone.isNotEmpty ? guardianPhone : '+8801700000000');
+    final resolvedEmail = email.isNotEmpty
+        ? email
+        : '${fullName.toLowerCase().replaceAll(RegExp(r'\s+'), '')}@greenhill.edu.bd';
+
+    if (fullName.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Please fill out all required student registration fields'),
+          content: Text('Please enter student full name and password'),
           backgroundColor: EduvantaColors.danger,
         ),
       );
       return;
     }
 
+    final desiredRoll = roll.isNotEmpty ? roll : '03';
+
     final applicationId = ref.read(registrationApplicationsProvider.notifier).submitApplication(
           fullName: fullName,
-          email: email,
-          phone: phone,
+          email: resolvedEmail,
+          phone: resolvedPhone,
           schoolId: '22222222-2222-2222-2222-222222222201',
           schoolName: _regSchool,
           className: _regClass,
           section: _regSection,
-          desiredRoll: roll.isNotEmpty ? roll : '10${10 + DateTime.now().second}',
+          desiredRoll: desiredRoll,
           guardianName: guardianName.isNotEmpty ? guardianName : 'Guardian',
-          guardianPhone: guardianPhone.isNotEmpty ? guardianPhone : phone,
+          guardianPhone: guardianPhone.isNotEmpty ? guardianPhone : resolvedPhone,
           password: password,
         );
 
-    _showRegistrationSuccessDialog(applicationId, fullName, email, _regClass, _regSection);
+    _showRegistrationSuccessDialog(applicationId, fullName, resolvedEmail, _regClass, _regSection);
   }
 
   void _showRegistrationSuccessDialog(
@@ -469,6 +478,166 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with SingleTickerProvid
     );
   }
 
+  // Floating Dialog for Student Registration (Screenshot 3)
+  void _showStudentRegistrationDialog() {
+    showDialog(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (context, setDialogState) => Dialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+          insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(24),
+            ),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Student Registration',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: EduvantaColors.primaryNavy),
+                  ),
+                  const SizedBox(height: 2),
+                  const Text(
+                    'নতুন শিক্ষার্থী অ্যাকাউন্ট আবেদন',
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: EduvantaColors.royalBlue),
+                  ),
+                  const SizedBox(height: 6),
+                  const Text(
+                    'Submit your details. School Admin will verify your Roll and approve access.',
+                    style: TextStyle(fontSize: 11, color: Color(0xFF64748B), height: 1.3),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Full Name
+                  TextField(
+                    controller: _regFullNameController,
+                    decoration: InputDecoration(
+                      labelText: 'Full Name (শিক্ষার্থীর পুরো নাম)',
+                      labelStyle: const TextStyle(fontSize: 12),
+                      hintText: 'sohel',
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+
+                  // Class & Section Row
+                  Row(
+                    children: [
+                      Expanded(
+                        child: DropdownButtonFormField<String>(
+                          initialValue: _regClass,
+                          decoration: InputDecoration(
+                            labelText: 'Class',
+                            labelStyle: const TextStyle(fontSize: 12),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                          ),
+                          items: _classes
+                              .map((c) => DropdownMenuItem(value: c, child: Text(c, style: const TextStyle(fontSize: 12))))
+                              .toList(),
+                          onChanged: (v) => setDialogState(() => _regClass = v ?? _regClass),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: DropdownButtonFormField<String>(
+                          initialValue: _regSection,
+                          decoration: InputDecoration(
+                            labelText: 'Section',
+                            labelStyle: const TextStyle(fontSize: 12),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                          ),
+                          items: _sections
+                              .map((s) => DropdownMenuItem(value: s, child: Text(s, style: const TextStyle(fontSize: 12))))
+                              .toList(),
+                          onChanged: (v) => setDialogState(() => _regSection = v ?? _regSection),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+
+                  // Requested Roll Number
+                  TextField(
+                    controller: _regRollController,
+                    keyboardType: TextInputType.text,
+                    decoration: InputDecoration(
+                      labelText: 'Requested Roll Number (রোল নম্বর)',
+                      labelStyle: const TextStyle(fontSize: 12),
+                      hintText: 'e.g. 01 / 1001',
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+
+                  // Guardian Mobile
+                  TextField(
+                    controller: _regGuardianPhoneController,
+                    keyboardType: TextInputType.phone,
+                    decoration: InputDecoration(
+                      labelText: 'Guardian Mobile (অভিভাবকের মোবাইল)',
+                      labelStyle: const TextStyle(fontSize: 12),
+                      hintText: '017xxxxxxxx',
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+
+                  // Password
+                  TextField(
+                    controller: _regPasswordController,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      labelText: 'Password (পাসওয়ার্ড)',
+                      labelStyle: const TextStyle(fontSize: 12),
+                      hintText: '••••••',
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                    ),
+                  ),
+                  const SizedBox(height: 18),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(ctx),
+                        child: const Text('Cancel', style: TextStyle(color: Color(0xFF64748B), fontWeight: FontWeight.bold)),
+                      ),
+                      const SizedBox(width: 8),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF2563EB),
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                        ),
+                        onPressed: () {
+                          Navigator.pop(ctx);
+                          _handleRegistrationSubmit();
+                        },
+                        child: const Text('Submit Registration', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   // ==============================================================================
   // TAB 1: SIGN IN
   // ==============================================================================
@@ -586,7 +755,23 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with SingleTickerProvid
                   style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                 ),
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 10),
+
+        // Direct Registration Modal Trigger (Screenshot 3)
+        OutlinedButton.icon(
+          style: OutlinedButton.styleFrom(
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            side: const BorderSide(color: EduvantaColors.royalBlue, width: 1.5),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          ),
+          onPressed: _showStudentRegistrationDialog,
+          icon: const Icon(Icons.person_add_alt_1_rounded, size: 18, color: EduvantaColors.royalBlue),
+          label: const Text(
+            'Student Registration (নতুন শিক্ষার্থী আবেদন)',
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: EduvantaColors.royalBlue),
+          ),
+        ),
+        const SizedBox(height: 16),
 
         // Enterprise Security & Institutional Access Note
         Container(
