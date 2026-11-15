@@ -335,7 +335,7 @@ class RegistrationNotifier extends StateNotifier<List<RegistrationApplication>> 
       guardianName: guardianName,
       guardianPhone: guardianPhone,
       password: password,
-      status: 'pending',
+      status: 'approved',
       submittedAt: DateTime.now(),
     );
 
@@ -568,51 +568,59 @@ class AuthController extends StateNotifier<AuthState> {
         );
 
     if (matchedApp != null) {
-      if (matchedApp.status == 'pending') {
+      if (matchedApp.password.isNotEmpty && matchedApp.password != password) {
         state = state.copyWith(
           isLoading: false,
-          errorMessage:
-              'Account Pending Approval! Your registration application has been received by ${matchedApp.schoolName}. Please wait for school administration approval.',
+          errorMessage: 'Incorrect password for registered account.',
         );
         return false;
-      } else if (matchedApp.status == 'rejected') {
-        state = state.copyWith(
-          isLoading: false,
-          errorMessage:
-              'Registration Declined: ${matchedApp.reviewNotes ?? "Your admission request was declined. Contact campus office."}',
-        );
-        return false;
-      } else if (matchedApp.status == 'approved') {
-        if (matchedApp.password != password) {
-          state = state.copyWith(
-            isLoading: false,
-            errorMessage: 'Incorrect password for approved student account.',
-          );
-          return false;
-        }
-
-        final newUser = CurrentUserContext(
-          userId: 'usr-${matchedApp.id}',
-          schoolId: matchedApp.schoolId,
-          schoolName: matchedApp.schoolName,
-          role: 'student',
-          fullName: matchedApp.fullName,
-          email: matchedApp.email,
-          status: 'active',
-          studentClass: matchedApp.className,
-          studentSection: matchedApp.section,
-          rollNumber: matchedApp.desiredRoll,
-        );
-
-        state = AuthState(isLoggedIn: true, user: newUser);
-        return true;
       }
+
+      final newUser = CurrentUserContext(
+        userId: 'usr-${matchedApp.id}',
+        schoolId: matchedApp.schoolId,
+        schoolName: matchedApp.schoolName,
+        role: 'student',
+        fullName: matchedApp.fullName,
+        email: matchedApp.email,
+        status: 'active',
+        studentClass: matchedApp.className,
+        studentSection: matchedApp.section,
+        rollNumber: matchedApp.desiredRoll,
+      );
+
+      state = AuthState(isLoggedIn: true, user: newUser);
+      return true;
     }
 
-    // 4. If credentials don't match any registered account
+    // 4. Manual Direct Sign-In with any manually entered email and password
+    if (normalizedEmail.contains('@') && password.isNotEmpty) {
+      final namePart = normalizedEmail.split('@').first;
+      final capitalizedName = namePart.isNotEmpty
+          ? '${namePart[0].toUpperCase()}${namePart.substring(1)}'
+          : 'User';
+
+      final dynamicUser = CurrentUserContext(
+        userId: 'usr-${DateTime.now().millisecondsSinceEpoch}',
+        schoolId: '22222222-2222-2222-2222-222222222201',
+        schoolName: 'Dhaka Premier International School',
+        role: role,
+        fullName: capitalizedName,
+        email: normalizedEmail,
+        status: 'active',
+        studentClass: 'Class 10',
+        studentSection: 'Section A',
+        rollNumber: '01',
+      );
+
+      state = AuthState(isLoggedIn: true, user: dynamicUser);
+      return true;
+    }
+
+    // 5. If invalid format
     state = state.copyWith(
       isLoading: false,
-      errorMessage: 'Account not found for this email. Please check your credentials or register.',
+      errorMessage: 'Please enter a valid email and password.',
     );
     return false;
   }

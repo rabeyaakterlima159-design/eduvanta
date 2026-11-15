@@ -704,7 +704,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with SingleTickerProvid
           controller: _loginEmailController,
           keyboardType: TextInputType.emailAddress,
           decoration: InputDecoration(
-            hintText: 'e.g. student@dpis.edu.bd',
+            hintText: 'Enter your email address',
             prefixIcon: const Icon(Icons.alternate_email, size: 20, color: Color(0xFF64748B)),
             filled: true,
             fillColor: Colors.white,
@@ -725,7 +725,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with SingleTickerProvid
           controller: _loginPasswordController,
           obscureText: _obscurePassword,
           decoration: InputDecoration(
-            hintText: 'Enter account password',
+            hintText: 'Enter your password',
             prefixIcon: const Icon(Icons.lock_outline, size: 20, color: Color(0xFF64748B)),
             suffixIcon: IconButton(
               icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility, size: 20, color: const Color(0xFF64748B)),
@@ -757,75 +757,23 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with SingleTickerProvid
                   style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                 ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 14),
 
-        // Direct Registration Modal Trigger (Screenshot 3)
+        // Direct Registration Tab Trigger
         OutlinedButton.icon(
           style: OutlinedButton.styleFrom(
             padding: const EdgeInsets.symmetric(vertical: 12),
             side: const BorderSide(color: EduvantaColors.royalBlue, width: 1.5),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           ),
-          onPressed: _showStudentRegistrationDialog,
+          onPressed: () => _tabController.animateTo(1),
           icon: const Icon(Icons.person_add_alt_1_rounded, size: 18, color: EduvantaColors.royalBlue),
           label: const Text(
-            'Student Registration (নতুন শিক্ষার্থী আবেদন)',
+            'New Student? Create Account / নতুন একাউন্ট খুলুন',
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: EduvantaColors.royalBlue),
           ),
         ),
-        const SizedBox(height: 16),
-
-        // Enterprise Security & Institutional Access Note
-        Container(
-          padding: const EdgeInsets.all(14),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: const Color(0xFFE2E8F0)),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Row(
-                children: [
-                  Icon(Icons.security_rounded, size: 16, color: EduvantaColors.primaryNavy),
-                  SizedBox(width: 6),
-                  Text(
-                    'Institutional Role Access Only',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: EduvantaColors.primaryNavy),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 6),
-              const Text(
-                'Please sign in with your official registered email and password. All access permissions are validated against multi-tenant campus records.',
-                style: TextStyle(fontSize: 11, color: Color(0xFF64748B), height: 1.4),
-              ),
-              const SizedBox(height: 10),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                decoration: BoxDecoration(
-                  color: EduvantaColors.primaryNavy.withValues(alpha: 0.05),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: EduvantaColors.primaryNavy.withValues(alpha: 0.15)),
-                ),
-                child: const Row(
-                  children: [
-                    Icon(Icons.admin_panel_settings_outlined, size: 16, color: EduvantaColors.royalBlue),
-                    SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        'Super Admin Login: rabeyaakterlima159@gmail.com\nDemo 1-tap logins disabled for enterprise security.',
-                        style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: EduvantaColors.primaryNavy, height: 1.3),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 60),
+        const SizedBox(height: 40),
       ],
     ),
   );
@@ -897,7 +845,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with SingleTickerProvid
         TextField(
           controller: _regFullNameController,
           decoration: InputDecoration(
-            hintText: 'e.g. Sumon Das',
+            hintText: 'Enter student full name',
             filled: true,
             fillColor: Colors.white,
             contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
@@ -919,7 +867,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with SingleTickerProvid
                     controller: _regEmailController,
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
-                      hintText: 'sumon@gmail.com',
+                      hintText: 'Enter email address',
                       filled: true,
                       fillColor: Colors.white,
                       contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
@@ -940,7 +888,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with SingleTickerProvid
                     controller: _regPhoneController,
                     keyboardType: TextInputType.phone,
                     decoration: InputDecoration(
-                      hintText: '017xxxxxxxx',
+                      hintText: 'Enter phone number',
                       filled: true,
                       fillColor: Colors.white,
                       contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
@@ -1046,7 +994,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with SingleTickerProvid
                     controller: _regRollController,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
-                      hintText: 'e.g. 1045',
+                      hintText: 'Enter desired roll',
                       filled: true,
                       fillColor: Colors.white,
                       contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
@@ -1072,7 +1020,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with SingleTickerProvid
                   TextField(
                     controller: _regGuardianNameController,
                     decoration: InputDecoration(
-                      hintText: 'Father/Mother Name',
+                      hintText: 'Enter guardian name',
                       filled: true,
                       fillColor: Colors.white,
                       contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
@@ -1093,7 +1041,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with SingleTickerProvid
                     controller: _regGuardianPhoneController,
                     keyboardType: TextInputType.phone,
                     decoration: InputDecoration(
-                      hintText: '018xxxxxxxx',
+                      hintText: 'Enter guardian phone',
                       filled: true,
                       fillColor: Colors.white,
                       contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
@@ -1114,7 +1062,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with SingleTickerProvid
           controller: _regPasswordController,
           obscureText: true,
           decoration: InputDecoration(
-            hintText: 'Minimum 6 characters',
+            hintText: 'Enter account password',
             filled: true,
             fillColor: Colors.white,
             contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
