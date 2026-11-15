@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/theme.dart';
@@ -27,6 +28,14 @@ class EduvantaMobileApp extends ConsumerWidget {
     return MaterialApp(
       title: 'EDUVANTA',
       debugShowCheckedModeBanner: false,
+      scrollBehavior: const MaterialScrollBehavior().copyWith(
+        dragDevices: {
+          PointerDeviceKind.touch,
+          PointerDeviceKind.mouse,
+          PointerDeviceKind.trackpad,
+          PointerDeviceKind.stylus,
+        },
+      ),
       theme: EduvantaTheme.lightTheme,
       darkTheme: EduvantaTheme.darkTheme,
       themeMode: ThemeMode.light,

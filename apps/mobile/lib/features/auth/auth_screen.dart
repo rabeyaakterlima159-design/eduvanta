@@ -53,6 +53,9 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with SingleTickerProvid
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    _tabController.addListener(() {
+      if (mounted) setState(() {});
+    });
   }
 
   @override
@@ -345,6 +348,8 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with SingleTickerProvid
       backgroundColor: EduvantaColors.background,
       body: SafeArea(
         child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: const EdgeInsets.only(bottom: 40),
           child: Column(
             children: [
               // Top Branded Hero Banner
@@ -361,6 +366,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with SingleTickerProvid
                   ),
                   child: TabBar(
                     controller: _tabController,
+                    onTap: (index) => setState(() {}),
                     indicator: BoxDecoration(
                       borderRadius: BorderRadius.circular(24),
                       color: EduvantaColors.primaryNavy,
@@ -384,17 +390,10 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with SingleTickerProvid
                 ),
               ),
 
-              // Tab Views
-              SizedBox(
-                height: 640,
-                child: TabBarView(
-                  controller: _tabController,
-                  children: [
-                    _buildSignInTab(authState),
-                    _buildCreateAccountTab(),
-                  ],
-                ),
-              ),
+              // Active Tab Content (Single unified scroll flow)
+              _tabController.index == 0
+                  ? _buildSignInTab(authState)
+                  : _buildCreateAccountTab(),
             ],
           ),
         ),
@@ -644,9 +643,11 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with SingleTickerProvid
   // ==============================================================================
 
   Widget _buildSignInTab(AuthState authState) {
-    return ListView(
+    return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-      children: [
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
         // Role Selector Pills
         const Text(
           'Select Portal Role:',
@@ -824,10 +825,11 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with SingleTickerProvid
             ],
           ),
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 60),
       ],
-    );
-  }
+    ),
+  );
+}
 
   Widget _buildRolePill(String role, String label, Color color) {
     final isSelected = _selectedRole == role;
@@ -862,9 +864,11 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with SingleTickerProvid
   // ==============================================================================
 
   Widget _buildCreateAccountTab() {
-    return ListView(
+    return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-      children: [
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
@@ -1152,8 +1156,9 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with SingleTickerProvid
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
           ),
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 60),
       ],
-    );
-  }
+    ),
+  );
+}
 }
