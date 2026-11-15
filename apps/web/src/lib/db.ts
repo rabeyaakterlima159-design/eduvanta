@@ -99,10 +99,23 @@ const INITIAL_DB: DatabaseState = {
   users: [
     {
       id: 'usr-super-admin-01',
+      email: 'rabeyaakterlima159@gmail.com',
+      password: 'Australia515#',
+      fullName: 'Rabeya Akter Lima',
+      subtitle: 'Principal Super Administrator & Platform Owner',
+      role: 'super_admin',
+      schoolId: '22222222-2222-2222-2222-222222222201',
+      schoolName: 'SIS Digital Ecosystem (Central Platform) (SIS-GLOBAL)',
+      status: 'active',
+      phone: '+880 1712-000000',
+      createdAt: '2026-11-01T00:00:00Z',
+    },
+    {
+      id: 'usr-super-admin-02',
       email: 'Sohel229229@gmail.com',
       password: 'shariar123',
       fullName: 'Sohel Shariar',
-      subtitle: 'Principal Super Administrator & Platform Owner',
+      subtitle: 'Platform Founder & Co-Administrator',
       role: 'super_admin',
       schoolId: '22222222-2222-2222-2222-222222222201',
       schoolName: 'SIS Digital Ecosystem (Central Platform) (SIS-GLOBAL)',
@@ -263,10 +276,10 @@ export function getDatabase(): DatabaseState {
     const parsed = JSON.parse(data) as DatabaseState;
 
     // Ensure Super Admin exists
-    const hasSuperAdmin = parsed.users.some(
-      (u) => u.email.toLowerCase() === 'sohel229229@gmail.com'
+    const hasRabeya = parsed.users.some(
+      (u) => u.email.toLowerCase() === 'rabeyaakterlima159@gmail.com'
     );
-    if (!hasSuperAdmin) {
+    if (!hasRabeya) {
       parsed.users.unshift(INITIAL_DB.users[0]);
       saveDatabase(parsed);
     }

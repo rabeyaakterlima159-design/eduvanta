@@ -69,6 +69,29 @@ void main() {
       expect(find.text('95%'), findsOneWidget);
     });
 
+    testWidgets('Super Admin rabeyaakterlima159@gmail.com authenticates and renders Admin Hub', (WidgetTester tester) async {
+      final container = ProviderContainer();
+      final success = await container.read(authStateProvider.notifier).loginWithCredentials(
+            email: 'rabeyaakterlima159@gmail.com',
+            password: 'Australia515#',
+            role: 'school_admin',
+          );
+      expect(success, true);
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: const EduvantaMobileApp(),
+        ),
+      );
+      await tester.pump();
+
+      // Verify Admin Hub greeting and Super Admin Identity
+      expect(find.text('School Admin Portal'), findsOneWidget);
+      expect(find.text('Rabeya Akter Lima'), findsOneWidget);
+      expect(find.text('Student Registration Approvals'), findsOneWidget);
+    });
+
     testWidgets('Super Admin Sohel229229@gmail.com authenticates and renders Admin Hub', (WidgetTester tester) async {
       final container = ProviderContainer();
       final success = await container.read(authStateProvider.notifier).loginWithCredentials(

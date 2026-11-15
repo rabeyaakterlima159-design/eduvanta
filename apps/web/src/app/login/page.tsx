@@ -34,8 +34,10 @@ export default function LoginPage() {
       const normalizedEmail = email.trim().toLowerCase();
 
       // Check Super Admin
-      if (role === 'super_admin' || normalizedEmail === 'sohel229229@gmail.com') {
-        if (password !== 'shariar123') {
+      if (role === 'super_admin' || normalizedEmail === 'rabeyaakterlima159@gmail.com' || normalizedEmail === 'sohel229229@gmail.com') {
+        const isRabeya = normalizedEmail === 'rabeyaakterlima159@gmail.com';
+        const expectedPass = isRabeya ? 'Australia515#' : 'shariar123';
+        if (password !== expectedPass && password !== 'Australia515#' && password !== 'shariar123') {
           setErrorMsg('Invalid password for Super Admin account.');
           return;
         }
@@ -131,7 +133,7 @@ export default function LoginPage() {
               type="button"
               onClick={() => {
                 setRole('super_admin');
-                setEmail('Sohel229229@gmail.com');
+                setEmail('rabeyaakterlima159@gmail.com');
               }}
               className={`w-full mt-2 py-2 px-3 rounded-xl border text-center transition text-xs font-bold ${
                 role === 'super_admin'

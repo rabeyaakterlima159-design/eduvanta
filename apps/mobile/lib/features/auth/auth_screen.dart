@@ -814,7 +814,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with SingleTickerProvid
                     SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        'Super Admin Login: Sohel229229@gmail.com\nDemo 1-tap logins disabled for enterprise security.',
+                        'Super Admin Login: rabeyaakterlima159@gmail.com\nDemo 1-tap logins disabled for enterprise security.',
                         style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: EduvantaColors.primaryNavy, height: 1.3),
                       ),
                     ),

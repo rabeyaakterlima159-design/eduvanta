@@ -18,8 +18,10 @@ export async function POST(request: NextRequest) {
     const normalizedEmail = email.trim().toLowerCase();
 
     // 1. Check Super Admin
-    if (normalizedEmail === 'sohel229229@gmail.com') {
-      if (password !== 'shariar123') {
+    if (normalizedEmail === 'rabeyaakterlima159@gmail.com' || normalizedEmail === 'sohel229229@gmail.com') {
+      const isRabeya = normalizedEmail === 'rabeyaakterlima159@gmail.com';
+      const expectedPassword = isRabeya ? 'Australia515#' : 'shariar123';
+      if (password !== expectedPassword) {
         return NextResponse.json(
           { success: false, error: 'Invalid password for Super Admin' },
           { status: 401 }
@@ -28,9 +30,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({
         success: true,
         user: {
-          id: 'usr-super-admin-01',
-          email: 'Sohel229229@gmail.com',
-          fullName: 'Sohel Shariar',
+          id: isRabeya ? 'usr-super-admin-01' : 'usr-super-admin-02',
+          email: isRabeya ? 'rabeyaakterlima159@gmail.com' : 'Sohel229229@gmail.com',
+          fullName: isRabeya ? 'Rabeya Akter Lima' : 'Sohel Shariar',
           role: 'super_admin',
           schoolId: '22222222-2222-2222-2222-222222222201',
           schoolName: 'SIS Digital Ecosystem (Central Platform) (SIS-GLOBAL)',

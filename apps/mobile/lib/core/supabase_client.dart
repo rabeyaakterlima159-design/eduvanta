@@ -189,7 +189,17 @@ class SystemAccountsNotifier extends StateNotifier<List<SystemAccount>> {
       : super([
           // Official Super Admin
           SystemAccount(
-            id: 'usr-super-admin',
+            id: 'usr-super-admin-01',
+            email: 'rabeyaakterlima159@gmail.com',
+            password: 'Australia515#',
+            fullName: 'Rabeya Akter Lima',
+            role: 'school_admin',
+            schoolId: '22222222-2222-2222-2222-222222222201',
+            schoolName: 'Dhaka Premier International School (Executive Hub)',
+            status: 'active',
+          ),
+          SystemAccount(
+            id: 'usr-super-admin-02',
             email: 'sohel229229@gmail.com',
             password: 'shariar123',
             fullName: 'Sohel Shariar',
@@ -491,9 +501,11 @@ class AuthController extends StateNotifier<AuthState> {
       // Fallback to local accounts directory if server is offline
     }
 
-    // 1. Check Super Admin Credentials (Sohel229229@gmail.com / shariar123)
-    if (normalizedEmail == 'sohel229229@gmail.com') {
-      if (password != 'shariar123') {
+    // 1. Check Super Admin Credentials
+    if (normalizedEmail == 'rabeyaakterlima159@gmail.com' || normalizedEmail == 'sohel229229@gmail.com') {
+      final isRabeya = normalizedEmail == 'rabeyaakterlima159@gmail.com';
+      final expectedPass = isRabeya ? 'Australia515#' : 'shariar123';
+      if (password != expectedPass) {
         state = state.copyWith(
           isLoading: false,
           errorMessage: 'Invalid password for Super Admin account.',
@@ -502,12 +514,12 @@ class AuthController extends StateNotifier<AuthState> {
       }
 
       final superAdmin = CurrentUserContext(
-        userId: 'usr-super-admin-01',
+        userId: isRabeya ? 'usr-super-admin-01' : 'usr-super-admin-02',
         schoolId: '22222222-2222-2222-2222-222222222201',
         schoolName: 'Platform Global Executive Hub',
         role: 'school_admin',
-        fullName: 'Sohel Shariar',
-        email: 'Sohel229229@gmail.com',
+        fullName: isRabeya ? 'Rabeya Akter Lima' : 'Sohel Shariar',
+        email: isRabeya ? 'rabeyaakterlima159@gmail.com' : 'Sohel229229@gmail.com',
         status: 'active',
       );
 

@@ -45,12 +45,12 @@ const initialUsersList: UserItem[] = [
     id: 'u-1',
     role: 'SUPERADMIN',
     roleCategory: 'super_admin',
-    fullName: 'Sohel Shariar',
+    fullName: 'Rabeya Akter Lima',
     subtitle: 'Principal Super Administrator & Platform Owner',
-    assignedRollOrId: 'Sohel229229@gmail.com',
+    assignedRollOrId: 'rabeyaakterlima159@gmail.com',
     classDept: 'Administration',
     institution: 'SIS Digital Ecosystem (Central Platform) (SIS-GLOBAL)',
-    contact: 'Sohel229229@gmail.com',
+    contact: 'rabeyaakterlima159@gmail.com',
     status: 'Active',
     portalUrl: '/super-admin',
   },
@@ -500,11 +500,11 @@ export default function SuperAdminPage() {
             </Link>
             <div className="flex items-center gap-2.5 pl-3 border-l border-slate-700/60">
               <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-amber-500 to-amber-300 text-slate-900 font-bold flex items-center justify-center text-xs shadow-md">
-                SS
+                RL
               </div>
               <div className="text-left">
-                <p className="text-xs font-bold text-white leading-tight">Sohel Shariar</p>
-                <p className="text-[10px] text-slate-400">Sohel229229@gmail.com</p>
+                <p className="text-xs font-bold text-white leading-tight">Rabeya Akter Lima</p>
+                <p className="text-[10px] text-slate-400">rabeyaakterlima159@gmail.com</p>
               </div>
             </div>
             <Link
